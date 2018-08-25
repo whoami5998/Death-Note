@@ -112,7 +112,8 @@ cat << !
 | 24 |  Koadic            | Là một rootkit hậu tấn công tương tự như Meterpreter và Powershell Empire,|
 |    |                    | thực hiện hầu hết các hoạt động của mình bằng Windows Script Host         |
 |----+--------------------+---------------------------------------------------------------------------|
-| 25 |  Mkvenom           | Là một kịch bản Bash tạo ra một lựa chọn các tải trọng thông thường của   | |    |                    | Metasploit Framework cho một máy mục tiêu cụ thể.			      |
+| 25 |  Mkvenom           | Là một kịch bản Bash tạo ra một lựa chọn các tải trọng thông thường của   |
+|    |                    | Metasploit Framework cho một máy mục tiêu cụ thể.			      |
 |----+--------------------+---------------------------------------------------------------------------|
 | 99 |	back              | trở về               					              |
  -----------------------------------------------------------------------------------------------------

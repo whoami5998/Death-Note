@@ -66,6 +66,7 @@ sudo apt-get autoclean -y
 sudo apt-get clean -y
 sudo apt-get update
 sudo apt-get install xterm --yes
+sudo apt-get install golang --yes
 }
 function ShowAndInstall_MalwareTools {
 clear
@@ -332,7 +333,8 @@ HackTheWorld=`find $Folder_Malware -name HackTheWorld -type d | grep -w "Tools/S
 		cd $Work_dir
 		#cp $dirfile_malwarebackup/HackTheWorld/HackTheWorld.py $Folder_Malware/Terminator/
 		cd $Folder_Malware/HackTheWorld/
-		chmod 755 *.py
+		xterm $BOTTOMRIGHT -bg "#000000" -fg "#FFFFFF" -title "=> Installing HackTheWorld <=" -e pip install termcolor
+		chmod 755 *.py && chmod 755 *.sh
 		xterm $BOTTOMRIGHT -bg "#000000" -fg "#FFFFFF" -title "=> Installing HackTheWorld <=" -e ./install.sh
 		echo -e "[ ✔ ]   HackTheWorld ${white}........ ${yellow}$Installed ${RESET}"
 		cd $Work_dir

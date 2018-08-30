@@ -121,7 +121,7 @@ function GenAndLis {
 #
 # Ngrok Tunnel - Port Forward
 #
-echo -e "[${red}*${RESET}] Thiết lập chế độ lắng nghe [${red}*${RESET}]"
+echo -e "[${red}*${RESET}] $establish_listerning [${red}*${RESET}]"
 Type_Li=$(zenity --list  --title "♛ Type Listerning ♛" --text "\nChose option:" --radiolist --column "Pick" --column "Option" TRUE "LAN listerning" FALSE "WAN listerning" FALSE "WAN listerning using NGROK" --width 300 --height 210 )
 #
 resize -s 31 104 > /dev/null 2>&1
@@ -132,13 +132,13 @@ gen_backdoor_table
 		case $choose in
 1)	###################### Dr0p1t-Framework ###########################
 			cd $dir_malware_tools/Dr0p1t-Framework/
-			python Dr0p1t.py; clear; Banner; order; break;;
+			python Dr0p1t.py; clear;cd $Work_dir; Banner; order; break;;
 2)	###################### DKMC ###########################
 			cd $dir_malware_tools/DKMC/
-			python dkmc.py; clear; Banner; order; break;;
+			python dkmc.py; clear;cd $Work_dir; Banner; order; break;;
 3)	###################### TheFatRat ######################
 			cd $dir_malware_tools/TheFatRat/
-			./fatrat; clear; Banner; order; break;;
+			./fatrat; clear; Banner;cd $Work_dir; order; break;;
 4) 	###################### msfpc ##########################	
 			cd $Work_dir/Modules/Metasploit/
 			rm config > /dev/null 2>&1
@@ -148,18 +148,18 @@ gen_backdoor_table
 			else	echo "WorkMode=1" > config
 			fi
 			cd ../../$dir_malware_tools/mpc/
-			./msfpc1.sh; clear; Banner; order; break;;
+			./msfpc1.sh; clear;cd $Work_dir; Banner; order; break;;
 5)	###################### Winpayloads ###########################
 			cd $dir_malware_tools/Winpayloads/
-			python WinPayloads.py; clear; Banner; order; break;;
+			python WinPayloads.py; clear;cd $Work_dir; Banner; order; break;;
 6)	###################### astroid ###########################
-			echo "Tool này đang thử nghiệm chưa thể  biến dịch thành file exe, Sorry :V chọn tool khác đeeeee "; clear; Banner; order; break;;
+			echo "Tool này đang thử nghiệm chưa thể  biến dịch thành file exe, Sorry :V chọn tool khác đeeeee "; clear;cd $Work_dir; Banner; order; break;;
 7)	###################### phantom-evasion ###########################
 			cd $dir_malware_tools/Phantom-Evasion/
-			python phantom-evasion.py; clear; Banner; order; break;;
+			python phantom-evasion.py; clear;cd $Work_dir; Banner; order; break;;
 8)	###################### tophat ###########################
 			cd $dir_malware_tools/TopHat/
-			python tophat.py; clear; Banner; order; break;;
+			python tophat.py; clear;cd $Work_dir; Banner; order; break;;
 9) 	###################### MPM ##########################	
 		  	cd $dir_malware_tools/Meterpreter_Paranoid_Mode-SSL/
 			rm config > /dev/null 2>&1
@@ -169,13 +169,13 @@ gen_backdoor_table
 			elif [ "$Type_Li" = "WAN listerning" ]; then 	echo "Working_mode=2" >> config
 			else	echo "Working_mode=1" >> config 
 			fi
-			./Meterpreter_Paranoid_Mode.sh; clear; Banner; order; break;;
+			./Meterpreter_Paranoid_Mode.sh; clear;cd $Work_dir; Banner; order; break;;
 10)	###################### venom ###########################
 			cd $dir_malware_tools/venom/
-			./venom.sh; clear; Banner; order; break;;
+			./venom.sh; clear;cd $Work_dir; Banner; order; break;;
 11)	###################### HERCULES ###########################
 			cd $dir_malware_tools/HERCULES/
-			HERCULES; clear; Banner; order; break;;
+			HERCULES; clear;cd $Work_dir; Banner; order; break;;
 12) 	###################### zirikatu ##########################
 		  	cd $dir_malware_tools/zirikatu/
 			rm config > /dev/null 2>&1
@@ -185,16 +185,16 @@ gen_backdoor_table
 			elif [ "$Type_Li" = "WAN listerning" ]; then 	echo "Working_mode=2" >> config
 			else	echo "Working_mode=1" >> config 
 			fi
-			./zirikatu.sh; clear; Banner; order; break;;
+			./zirikatu.sh; clear;cd $Work_dir; Banner; order; break;;
 13)	###################### CHAOS ###########################
 			cd $dir_malware_tools/CHAOS/
-			go run CHAOS.go; clear; Banner; order; break;;
+			go run CHAOS.go; clear;cd $Work_dir; Banner; order; break;;
 14)	###################### NXcrypt ###########################
 			cd $dir_malware_tools/NXcrypt/
-			python NXcrypt.py; clear; Banner; order; break;;	
+			python NXcrypt.py; clear;cd $Work_dir; Banner; order; break;;	
 15)	###################### Reverse0x1 ###########################
 			cd $dir_malware_tools/Reverse0x1/
-			python reverse.py; clear; Banner; order; break;;
+			python reverse.py; clear;cd $Work_dir; Banner; order; break;;
 17)	###################### Trolo ###########################
 cd $dir_malware_tools/trolo/
 			rm config > /dev/null 2>&1
@@ -204,31 +204,28 @@ cd $dir_malware_tools/trolo/
 			elif [ "$Type_Li" = "WAN listerning" ]; then 	echo "Working_mode=2" >> config
 			else	echo "Working_mode=1" >> config 
 			fi
-			./trolo.sh; clear; Banner; order; break;;
+			./trolo.sh; clear;cd $Work_dir; Banner; order; break;;
 18)	###################### Metasploitavevasion ###########################
 			cd $dir_malware_tools/metasploitavevasion/
-			./avoid.sh; clear; Banner; order; break;;
+			./avoid.sh; clear;cd $Work_dir; Banner; order; break;;
 19)	###################### Terminator ###########################
 			cd $dir_malware_tools/Terminator/
-			python terminator.py; clear; Banner; order; break;;
+			python terminator.py; clear;cd $Work_dir; Banner; order; break;;
 20)	###################### HackTheWorld ###########################
 			cd $dir_malware_tools/HackTheWorld/
-			python HackTheWorld.py; clear; Banner; order; break;;
-21)	###################### Avet ###########################
-			cd $dir_malware_tools/Reverse0x1/
-			python reverse.py; clear; Banner; order; break;;
+			python HackTheWorld.py; clear;cd $Work_dir; Banner; order; break;;
 22)	###################### ZeroDoor ###########################
 			cd $dir_malware_tools/Zerodoor/
-			python zerodoor.py; clear; Banner; order; break;;
+			python zerodoor.py; clear;cd $Work_dir; Banner; order; break;;
 23)	###################### Andspoilt ###########################
 			cd $dir_malware_tools/Andspoilt/
-			python andspoilt.py; clear; Banner; order; break;;
+			python andspoilt.py; clear;cd $Work_dir; Banner; order; break;;
 24)	###################### Koadic ###########################
 			cd $dir_malware_tools/koadic/
-			./koadic; clear; Banner; order; break;;
+			./koadic; clear;cd $Work_dir; Banner; order; break;;
 25)	###################### Mkvenom ###########################
 			cd $dir_malware_tools/mkvenom/
-			./mkvenom.sh; clear; Banner; order; break;;
+			./mkvenom.sh; clear;cd $Work_dir; Banner; order; break;;
 99)	###################### back ###########################
 	clear; Banner; order; break;;
 * ) echo -e "$error1";
@@ -245,10 +242,10 @@ function maware_tools {
 		case $choose in
 1)	###################### BeeLogger ###########################
 			cd $dir_malware_tools/BeeLogger/
-			python bee.py; clear; Banner; order; break;;			
-2)	###################### TheFatRat ######################
+			python bee.py; clear;cd $Work_dir; Banner; order; break;;			
+2)	###################### sAINT ######################
 			cd $dir_malware_tools/sAINT/
-			java -jar sAINT.jar; clear; Banner; order; break;;
+			java -jar sAINT.jar; clear;cd $Work_dir; Banner; order; break;;
 99)	order; break;;
 * ) echo -e "$error1";
 		echo  -ne "$input_choose";;

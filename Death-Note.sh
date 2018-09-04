@@ -207,7 +207,12 @@ cd $dir_malware_tools/trolo/
 			./trolo.sh; clear; Banner; order; break;;
 18)	###################### Metasploitavevasion ###########################
 			cd $Work_dir/Modules/Metasploit/
-			config_mode
+			rm config > /dev/null 2>&1
+			touch config
+			if [ "$Type_Li" = "WAN listerning using NGROK" ]; then	echo "WorkMode=3" > config
+			elif [ "$Type_Li" = "WAN listerning" ]; then 	echo "WorkMode=2" > config
+			else	echo "WorkMode=1" > config
+			fi
 			cd ../../$dir_malware_tools/metasploitavevasion/
 			./avoid.sh; clear;cd $Work_dir; Banner; order; break;;
 19)	###################### Terminator ###########################

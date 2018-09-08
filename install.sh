@@ -788,7 +788,38 @@ cd $Work_dir
 sleep 1
 }
 function ShowAndInstall_ALLTools {
-	all_malware_tools
-	all_wifi_tools
+		drolit
+		dkmc
+		fatrat
+		msfpc
+		winpayloads
+		astroid
+		phantom
+		tophat
+		mpm
+		venom
+		hercules
+		zirikatu
+		chaos
+		nxcrypt
+		reverse0x1
+		backdoor_factory
+		trolo
+		metasploitavevasion
+		terminator
+		hacktheworld
+		avet
+		zerodoor
+		andsploit
+		koadic
+		mkvemon
+		beelogger
+		saint
+		fluxion
+		wifiphisher
+		airgeddon
+		hashcat
+		hcxtool
+		mdk4
 	add_module_metasploits
 }

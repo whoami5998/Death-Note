@@ -1,6 +1,5 @@
 ###############  	Death Note  	####################################
 return_choose="Trở lại"
-establish_listerning="Thiết lập chế độ lắng nghe"
 input_choose="Chọn một trong các kiểu sau: "
 WAchoose_option1="Tấn công mạng không dây"
 WAchoose_option2="Tấn công mạng Bluetooth"
@@ -9,6 +8,7 @@ GenMess="1) Tự động tạo và nghe backdoor"
 ############### Install Tools ##############################3
 Installed="Đã cài đặt"
 NotInstalled="Chưa cài đặt"
+install_parameter="Chọn tool cần cài đặt: "
 ###############  AutoListerning.sh + Listerning.sh  ####################################
 ipv4=" Địa chỉ IPv4 của bạn là :"
 ipv6=" Địa chỉ IPv6 của bạn là :"

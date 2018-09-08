@@ -347,7 +347,7 @@ metasploitavevasion=`find $Folder_Malware -name metasploitavevasion -type d | gr
 		cd $Folder_Malware
 		xterm $BOTTOMRIGHT -bg "#000000" -fg "#FFFFFF" -title "=> Download Metasploitavevasion <=" -e git clone https://github.com/nccgroup/metasploitavevasion.git
 		cd $Work_dir
-		#cp $dirfile_malwarebackup/metasploitavevasion/metasploitavevasion.sh $Folder_Malware/metasploitavevasion/
+		cp $dirfile_malwarebackup/metasploitavevasion/avoid.sh $Folder_Malware/metasploitavevasion/
 		cd $Folder_Malware/metasploitavevasion/
 		chmod 755 *.sh
 		echo -e "[ ✔ ]   Metasploitavevasion ${white}. ${yellow}$Installed ${RESET}"

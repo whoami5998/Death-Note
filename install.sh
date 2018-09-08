@@ -5,7 +5,17 @@ Folder_WIFI="Tools/Wireless-Attacks/"
 dirfile_malwarebackup="library/backup/Synthetic-Malware/"
 dirfile_WIFIbackup="library/backup/Wireless-Attacks/"
 dirfile_metasploitbackup="library/backup/Metasploit/"
-source language/VietNamese/VN
+source $Work_dir/Modules/configLanguage
+######################
+#language
+if [ "$language" = "VN" ]; then
+source $Work_dir/language/VietNamese/VN
+source $Work_dir/language/VietNamese/vn_table
+elif [ "$language" = "EN" ]; then
+source $Work_dir/language/English/EN
+source $Work_dir/language/English/en_table
+fi
+#######################
 ######## Color ##############
 cyan='\e[0;36m'
 green='\e[0;34m'
@@ -68,11 +78,11 @@ sudo apt-get update
 sudo apt-get install xterm --yes
 sudo apt-get install golang --yes
 }
-function ShowAndInstall_MalwareTools {
-clear
-echo -e "${cyan}	Install Malware Tools${RESET}"
-sleep 0.5
+##################################################################
+############## Backdoor and malwares #############################
+##################################################################
 ############# Dr0p1t-Framework ################
+function drolit {
 Drolit=`find $Folder_Malware -name Dr0p1t-Framework -type d | grep -w "Tools/Synthetic-Malware/Dr0p1t-Framework"`
 	if [ "$Drolit" = "Tools/Synthetic-Malware/Dr0p1t-Framework" ]; then
 		echo -e "[ ✔ ]   Dr0p1t-Framework ${white}.... ${yellow}$Installed ${RESET}"
@@ -85,7 +95,9 @@ Drolit=`find $Folder_Malware -name Dr0p1t-Framework -type d | grep -w "Tools/Syn
 		echo -e "[ ✔ ]   Dr0p1t-Framework ${white}.... ${yellow}$Installed ${RESET}"
 		cd $Work_dir
 	fi
-############# Don't kill my cat ################	
+}
+############# Don't kill my cat ################
+function dkmc {	
 dkmc=`find $Folder_Malware -name DKMC -type d | grep -w "Tools/Synthetic-Malware/DKMC"`
 	if [ "$dkmc" = "Tools/Synthetic-Malware/DKMC" ]; then
 		echo -e "[ ✔ ]   DKMC ${white}................ ${yellow}$Installed ${RESET}"
@@ -97,7 +109,9 @@ dkmc=`find $Folder_Malware -name DKMC -type d | grep -w "Tools/Synthetic-Malware
 		echo -e "[ ✔ ]   DKMC ${white}................ ${yellow}$Installed ${RESET}"
 		cd $Work_dir
 	fi
-############# TheFatRat ################	
+}
+############# TheFatRat ################
+function fatrat {
 thefatrat=`find $Folder_Malware -name TheFatRat -type d | grep -w "Tools/Synthetic-Malware/TheFatRat"`
 	if [ "$thefatrat" = "Tools/Synthetic-Malware/TheFatRat" ]; then
 		echo -e "[ ✔ ]   TheFatRat ${white}........... ${yellow}$Installed ${RESET}"
@@ -110,7 +124,9 @@ thefatrat=`find $Folder_Malware -name TheFatRat -type d | grep -w "Tools/Synthet
 		echo -e "[ ✔ ]   TheFatRat ${white}........... ${yellow}$Installed ${RESET}"
 		cd $Work_dir
 	fi
+}
 ############# msfpc ################	
+function msfpc {
 msfpc=`find $Folder_Malware -name mpc -type d | grep -w "Tools/Synthetic-Malware/mpc"`
 	if [ "$msfpc" = "Tools/Synthetic-Malware/mpc" ]; then
 		echo -e "[ ✔ ]   Msfpc ${white}............... ${yellow}$Installed ${RESET}"
@@ -125,7 +141,9 @@ cd $Folder_Malware
 		cd $Work_dir
 		echo -e "[ ✔ ]   Msfpc ${white}............... ${yellow}$Installed ${RESET}"
 	fi
-############# winpayloads ################	
+}
+############# winpayloads ################
+function winpayloads {	
 winpayloads=`find $Folder_Malware -name Winpayloads -type d | grep -w "Tools/Synthetic-Malware/Winpayloads"`
 	if [ "$winpayloads" = "Tools/Synthetic-Malware/Winpayloads" ]; then
 		echo -e "[ ✔ ]   Winpayloads ${white}......... ${yellow}$Installed ${RESET}"
@@ -138,7 +156,9 @@ winpayloads=`find $Folder_Malware -name Winpayloads -type d | grep -w "Tools/Syn
 		echo -e "[ ✔ ]   Winpayloads ${white}......... ${yellow}$Installed ${RESET}"
 		cd $Work_dir
 	fi
-############# astroid ################	
+}
+############# astroid ################
+function astroid {
 astroid=`find $Folder_Malware -name astroid -type d | grep -w "Tools/Synthetic-Malware/astroid"`
 	if [ "$astroid" = "Tools/Synthetic-Malware/astroid" ]; then
 		echo -e "[ ✔ ]   astroid ${white}............. ${yellow}$Installed ${RESET}"
@@ -151,7 +171,9 @@ astroid=`find $Folder_Malware -name astroid -type d | grep -w "Tools/Synthetic-M
 		echo -e "[ ✔ ]   astroid ${white}............. ${yellow}$Installed ${RESET}"
 		cd $Work_dir
 	fi
-############# Phantom-Evasio ################	
+}
+############# Phantom-Evasio ################
+function phantom {
 phantom=`find $Folder_Malware -name Phantom-Evasion -type d | grep -w "Tools/Synthetic-Malware/Phantom-Evasion"`
 	if [ "$phantom" = "Tools/Synthetic-Malware/Phantom-Evasion" ]; then
 		echo -e "[ ✔ ]   Phantom-Evasion ${white}..... ${yellow}$Installed ${RESET}"
@@ -163,7 +185,9 @@ cd $Folder_Malware
 		echo -e "[ ✔ ]   Phantom-Evasion ${white}..... ${yellow}$Installed ${RESET}"
 		cd $Work_dir
 	fi
-############# tophat ################	
+}
+############# tophat ################
+function tophat {
 tophat=`find $Folder_Malware -name TopHat -type d | grep -w "Tools/Synthetic-Malware/TopHat"`
 	if [ "$tophat" = "Tools/Synthetic-Malware/TopHat" ]; then
 		echo -e "[ ✔ ]   TopHat ${white}.............. ${yellow}$Installed ${RESET}"
@@ -175,7 +199,9 @@ cd $Folder_Malware
 		echo -e "[ ✔ ]   TopHat ${white}.............. ${yellow}$Installed ${RESET}"
 		cd $Work_dir
 	fi
+}
 ############# mpm ################	
+function mpm {
 mpm=`find $Folder_Malware -name Meterpreter_Paranoid_Mode-SSL -type d | grep -w "Tools/Synthetic-Malware/Meterpreter_Paranoid_Mode-SSL"`
 	if [ "$mpm" = "Tools/Synthetic-Malware/Meterpreter_Paranoid_Mode-SSL" ]; then
 		echo -e "[ ✔ ]   MPM ${white}................. ${yellow}$Installed ${RESET}"
@@ -189,7 +215,9 @@ cd $Folder_Malware
 		cd $Work_dir
 		echo -e "[ ✔ ]   MPM ${white}................. ${yellow}$Installed ${RESET}"
 	fi
-############# venom ################	
+}
+############# venom ################
+function venom {
 venom=`find $Folder_Malware -name venom -type d | grep -w "Tools/Synthetic-Malware/venom"`
 	if [ "$venom" = "Tools/Synthetic-Malware/venom" ]; then
 		echo -e "[ ✔ ]   venom ${white}............... ${yellow}$Installed ${RESET}"
@@ -199,7 +227,9 @@ venom=`find $Folder_Malware -name venom -type d | grep -w "Tools/Synthetic-Malwa
 		echo -e "[ ✔ ]   venom ${white}............... ${yellow}$Installed ${RESET}"
 		cd $Work_dir
 	fi
+}
 ############# HERCULES ################	
+function hercules {
 HERCULES=`find $Folder_Malware -name HERCULES -type d | grep -w "Tools/Synthetic-Malware/HERCULES"`
 	if [ "$HERCULES" = "Tools/Synthetic-Malware/HERCULES" ]; then
 		echo -e "[ ✔ ]   HERCULES ${white}............ ${yellow}$Installed ${RESET}"
@@ -214,7 +244,9 @@ xterm $BOTTOMRIGHT -bg "#000000" -fg "#FFFFFF" -title "=> Installing HERCULES <=
 		echo -e "[ ✔ ]   HERCULES ${white}............ ${yellow}$Installed ${RESET}"
 		cd $Work_dir
 	fi
-############# zirikatu ################	
+}
+############# zirikatu ################
+function zirikatu {
 zirikatu=`find $Folder_Malware -name zirikatu -type d | grep -w "Tools/Synthetic-Malware/zirikatu"`
 	if [ "$zirikatu" = "Tools/Synthetic-Malware/zirikatu" ]; then
 		echo -e "[ ✔ ]   zirikatu ${white}............ ${yellow}$Installed ${RESET}"
@@ -228,7 +260,9 @@ zirikatu=`find $Folder_Malware -name zirikatu -type d | grep -w "Tools/Synthetic
 		echo -e "[ ✔ ]   zirikatu ${white}............ ${yellow}$Installed ${RESET}"
 		cd $Work_dir
 	fi
-############# CHAOS ################	
+}
+############# CHAOS ################
+function chaos {
 CHAOS=`find $Folder_Malware -name CHAOS -type d | grep -w "Tools/Synthetic-Malware/CHAOS"`
 	if [ "$CHAOS" = "Tools/Synthetic-Malware/CHAOS" ]; then
 		echo -e "[ ✔ ]   CHAOS ${white}............... ${yellow}$Installed ${RESET}"
@@ -244,7 +278,9 @@ xterm $BOTTOMRIGHT -bg "#000000" -fg "#FFFFFF" -title "=> Installing CHAOS <=" -
 		echo -e "[ ✔ ]   CHAOS ${white}............... ${yellow}$Installed ${RESET}"
 		cd $Work_dir
 	fi
+}
 ############# NXcrypt ################
+function nxcrypt {
 NXcrypt=`find $Folder_Malware -name NXcrypt -type d | grep -w "Tools/Synthetic-Malware/NXcrypt"`
 	if [ "$NXcrypt" = "Tools/Synthetic-Malware/NXcrypt" ]; then
 		echo -e "[ ✔ ]   NXcrypt ${white}............. ${yellow}$Installed ${RESET}"
@@ -256,7 +292,9 @@ NXcrypt=`find $Folder_Malware -name NXcrypt -type d | grep -w "Tools/Synthetic-M
 		echo -e "[ ✔ ]   NXcrypt ${white}............. ${yellow}$Installed ${RESET}"
 		cd $Work_dir
 	fi
-############# Reverse0x1 ################	
+}
+############# Reverse0x1 ################
+function reverse0x1 {	
 Reverse0x1=`find $Folder_Malware -name Reverse0x1 -type d | grep -w "Tools/Synthetic-Malware/Reverse0x1"`
 	if [ "$Reverse0x1" = "Tools/Synthetic-Malware/Reverse0x1" ]; then
 		echo -e "[ ✔ ]   Reverse0x1 ${white}.......... ${yellow}$Installed ${RESET}"
@@ -268,7 +306,9 @@ Reverse0x1=`find $Folder_Malware -name Reverse0x1 -type d | grep -w "Tools/Synth
 		echo -e "[ ✔ ]   Reverse0x1 ${white}.......... ${yellow}$Installed ${RESET}"
 		cd $Work_dir
 	fi
-############# The-backdoor-factory ################	
+}
+############# The-backdoor-factory ###############
+function backdoor_factory {
 backdoorfactory=`find $Folder_Malware -name the-backdoor-factory -type d | grep -w "Tools/Synthetic-Malware/the-backdoor-factory"`
 	if [ "$backdoorfactory" = "Tools/Synthetic-Malware/the-backdoor-factory" ]; then
 		echo -e "[ ✔ ]   The-backdoor-factory ${white} ${yellow}$Installed ${RESET}"
@@ -281,7 +321,9 @@ cd $Folder_Malware
 		echo -e "[ ✔ ]   The-backdoor-factory ${white} ${yellow}$Installed ${RESET}"
 		cd $Work_dir
 	fi
-############# trolo ################	
+}
+############# trolo ################
+function trolo {	
 trolo=`find $Folder_Malware -name trolo -type d | grep -w "Tools/Synthetic-Malware/trolo"`
 	if [ "$trolo" = "Tools/Synthetic-Malware/trolo" ]; then
 		echo -e "[ ✔ ]   Trolo ${white}............... ${yellow}$Installed ${RESET}"
@@ -295,7 +337,9 @@ trolo=`find $Folder_Malware -name trolo -type d | grep -w "Tools/Synthetic-Malwa
 		echo -e "[ ✔ ]   Trolo ${white}............... ${yellow}$Installed ${RESET}"
 		cd $Work_dir
 	fi
+}
 ############# Metasploitavevasion ################
+function metasploitavevasion {
 metasploitavevasion=`find $Folder_Malware -name metasploitavevasion -type d | grep -w "Tools/Synthetic-Malware/metasploitavevasion"`
 	if [ "$metasploitavevasion" = "Tools/Synthetic-Malware/metasploitavevasion" ]; then
 		echo -e "[ ✔ ]   Metasploitavevasion ${white}. ${yellow}$Installed ${RESET}"
@@ -309,7 +353,9 @@ metasploitavevasion=`find $Folder_Malware -name metasploitavevasion -type d | gr
 		echo -e "[ ✔ ]   Metasploitavevasion ${white}. ${yellow}$Installed ${RESET}"
 		cd $Work_dir
 	fi
+}
 ############# Terminator ################
+function terminator {
 Terminator=`find $Folder_Malware -name Terminator -type d | grep -w "Tools/Synthetic-Malware/Terminator"`
 	if [ "$Terminator" = "Tools/Synthetic-Malware/Terminator" ]; then
 		echo -e "[ ✔ ]   Terminator ${white}.......... ${yellow}$Installed ${RESET}"
@@ -323,7 +369,9 @@ Terminator=`find $Folder_Malware -name Terminator -type d | grep -w "Tools/Synth
 		echo -e "[ ✔ ]   Terminator ${white}.......... ${yellow}$Installed ${RESET}"
 		cd $Work_dir
 	fi
+}
 ############# HackTheWorld ################
+function hacktheworld {
 HackTheWorld=`find $Folder_Malware -name HackTheWorld -type d | grep -w "Tools/Synthetic-Malware/HackTheWorld"`
 	if [ "$HackTheWorld" = "Tools/Synthetic-Malware/HackTheWorld" ]; then
 		echo -e "[ ✔ ]   HackTheWorld ${white}........ ${yellow}$Installed ${RESET}"
@@ -339,7 +387,9 @@ HackTheWorld=`find $Folder_Malware -name HackTheWorld -type d | grep -w "Tools/S
 		echo -e "[ ✔ ]   HackTheWorld ${white}........ ${yellow}$Installed ${RESET}"
 		cd $Work_dir
 	fi
+}
 ############# Avet ################
+function avet {
 avet=`find $Folder_Malware -name avet -type d | grep -w "Tools/Synthetic-Malware/avet"`
 	if [ "$avet" = "Tools/Synthetic-Malware/avet" ]; then
 		echo -e "[ ✔ ]   Avet ${white}................ ${yellow}$Installed ${RESET}"
@@ -351,7 +401,9 @@ avet=`find $Folder_Malware -name avet -type d | grep -w "Tools/Synthetic-Malware
 		echo -e "[ ✔ ]   Avet ${white}................ ${yellow}$Installed ${RESET}"
 		cd $Work_dir
 	fi
+}
 ############# ZeroDoor ################
+function zerodoor {
 Zerodoor=`find $Folder_Malware -name Zerodoor -type d | grep -w "Tools/Synthetic-Malware/Zerodoor"`
 	if [ "$Zerodoor" = "Tools/Synthetic-Malware/Zerodoor" ]; then
 		echo -e "[ ✔ ]   ZeroDoor ${white}............ ${yellow}$Installed ${RESET}"
@@ -365,7 +417,9 @@ Zerodoor=`find $Folder_Malware -name Zerodoor -type d | grep -w "Tools/Synthetic
 		echo -e "[ ✔ ]   ZeroDoor ${white}............ ${yellow}$Installed ${RESET}"
 		cd $Work_dir
 	fi
+}
 ############# Andspoilt ################
+function andsploit {
 Andspoilt=`find $Folder_Malware -name Andspoilt -type d | grep -w "Tools/Synthetic-Malware/Andspoilt"`
 	if [ "$Andspoilt" = "Tools/Synthetic-Malware/Andspoilt" ]; then
 		echo -e "[ ✔ ]   Andspoilt ${white}........... ${yellow}$Installed ${RESET}"
@@ -380,7 +434,9 @@ Andspoilt=`find $Folder_Malware -name Andspoilt -type d | grep -w "Tools/Synthet
 		echo -e "[ ✔ ]   Andspoilt ${white}........... ${yellow}$Installed ${RESET}"
 		cd $Work_dir
 	fi
+}
 ############# Koadic ################
+function koadic {
 koadic=`find $Folder_Malware -name koadic -type d | grep -w "Tools/Synthetic-Malware/koadic"`
 	if [ "$koadic" = "Tools/Synthetic-Malware/koadic" ]; then
 		echo -e "[ ✔ ]   Koadic ${white}.............. ${yellow}$Installed ${RESET}"
@@ -394,7 +450,9 @@ koadic=`find $Folder_Malware -name koadic -type d | grep -w "Tools/Synthetic-Mal
 		echo -e "[ ✔ ]   Koadic ${white}.............. ${yellow}$Installed ${RESET}"
 		cd $Work_dir
 	fi
+}
 ############# Mkvenom ################
+function mkvemon {
 mkvenom=`find $Folder_Malware -name mkvenom -type d | grep -w "Tools/Synthetic-Malware/mkvenom"`
 	if [ "$mkvenom" = "Tools/Synthetic-Malware/mkvenom" ]; then
 		echo -e "[ ✔ ]   Mkvenom ${white}............. ${yellow}$Installed ${RESET}"
@@ -408,7 +466,9 @@ mkvenom=`find $Folder_Malware -name mkvenom -type d | grep -w "Tools/Synthetic-M
 		echo -e "[ ✔ ]   Mkvenom ${white}............. ${yellow}$Installed ${RESET}"
 		cd $Work_dir
 	fi
+}
 ############# BeeLogger ################	
+function beelogger {
 BeeLogger=`find $Folder_Malware -name BeeLogger -type d | grep -w "Tools/Synthetic-Malware/BeeLogger"`
 	if [ "$BeeLogger" = "Tools/Synthetic-Malware/BeeLogger" ]; then
 		echo -e "[ ✔ ]   BeeLogger ${white}........... ${yellow}$Installed ${RESET}"
@@ -421,8 +481,10 @@ BeeLogger=`find $Folder_Malware -name BeeLogger -type d | grep -w "Tools/Synthet
 		echo -e "[ ✔ ]   BeeLogger ${white}........... ${yellow}$Installed ${RESET}"
 		cd $Work_dir
 	fi
+}
 ############# sAINT ################
-	sAINT=`find $Folder_Malware -name sAINT -type d | grep -w "Tools/Synthetic-Malware/sAINT"`
+function saint {
+sAINT=`find $Folder_Malware -name sAINT -type d | grep -w "Tools/Synthetic-Malware/sAINT"`
 	if [ "$sAINT" = "Tools/Synthetic-Malware/sAINT" ]; then
 		echo -e "[ ✔ ]   sAINT ${white}............... ${yellow}$Installed ${RESET}"
 	else    echo -e "[ ! ]   sAINT ${white}............... ${red}$NotInstalled ${RESET}"
@@ -436,15 +498,12 @@ BeeLogger=`find $Folder_Malware -name BeeLogger -type d | grep -w "Tools/Synthet
 		echo -e "[ ✔ ]   sAINT ${white}............... ${yellow}$Installed ${RESET}"
 		cd $Work_dir
 	fi
-##################################
-sleep 1
 }
-
-function ShowAndInstall_WiFiTools {
-clear
-echo -e "${cyan}	Install WIFI Tools${RESET}"
-sleep 0.5
+##################################################################
+############## WIFI Tools ########################################
+##################################################################
 ############# Fluxion ################
+function fluxion {
 fluxion=`find $Folder_WIFI -name fluxion -type d | grep -w "Tools/Wireless-Attacks/fluxion"`
 	if [ "$fluxion" = "Tools/Wireless-Attacks/fluxion" ]; then
 		echo -e "[ ✔ ]   Fluxion ${white}............. ${yellow}$Installed ${RESET}"
@@ -464,7 +523,9 @@ fluxion=`find $Folder_WIFI -name fluxion -type d | grep -w "Tools/Wireless-Attac
 		cd $Work_dir
 		echo -e "[ ✔ ]   Fluxion ${white}............. ${yellow}$Installed ${RESET}"
 	fi
+}
 ############# Wifiphisher ################
+function wifiphisher {
 wifiphisher=`find $Folder_WIFI -name wifiphisher -type d | grep -w "Tools/Wireless-Attacks/wifiphisher/wifiphisher"`
 	if [ "$wifiphisher" = "Tools/Wireless-Attacks/wifiphisher/wifiphisher" ]; then
 		echo -e "[ ✔ ]   Wifiphisher ${white}......... ${yellow}$Installed ${RESET}"
@@ -477,7 +538,9 @@ wifiphisher=`find $Folder_WIFI -name wifiphisher -type d | grep -w "Tools/Wirele
 		echo -e "[ ✔ ]   Wifiphisher ${white}......... ${yellow}$Installed ${RESET}"
 		cd $Work_dir
 	fi
+}
 ############# Airgeddon ################
+function airgeddon {
 airgeddon=`find $Folder_WIFI -name airgeddon -type d | grep -w "Tools/Wireless-Attacks/airgeddon"`
 	if [ "$airgeddon" = "Tools/Wireless-Attacks/airgeddon" ]; then
 		echo -e "[ ✔ ]   Airgeddon ${white}........... ${yellow}$Installed ${RESET}"
@@ -489,7 +552,9 @@ airgeddon=`find $Folder_WIFI -name airgeddon -type d | grep -w "Tools/Wireless-A
 		echo -e "[ ✔ ]   Airgeddon ${white}........... ${yellow}$Installed ${RESET}"
 		cd $Work_dir
 	fi
+}
 ############# hashcat ################
+function hashcat {
  	if ! [ -f /usr/bin/hashcat ]; then
                 echo -e "[ ! ]   hashcat ${white}............. ${red}$NotInstalled ${RESET}"
 		cd $Folder_WIFI
@@ -501,7 +566,9 @@ airgeddon=`find $Folder_WIFI -name airgeddon -type d | grep -w "Tools/Wireless-A
         else
 		echo -e "[ ✔ ]   hashcat ${white}............. ${yellow}$Installed ${RESET}"
         fi
+}
 ############# hcxtools and hcxdumptools ################
+function hcxtool {
 hcxtools=`find $Folder_WIFI -name hcxtools -type d | grep -w "Tools/Wireless-Attacks/hcxtools"`
 	if [ "$hcxtools" = "Tools/Wireless-Attacks/hcxtools" ]; then
 		echo -e "[ ✔ ]   hcxtools ${white}............ ${yellow}$Installed ${RESET}"
@@ -528,7 +595,9 @@ hcxdumptool=`find $Folder_WIFI -name hcxdumptool -type d | grep -w "Tools/Wirele
 		echo -e "[ ✔ ]   hcxdumptool ${white}......... ${yellow}$Installed ${RESET}"
 		cd $Work_dir
 	fi
+}
 ############# MDK4 ################
+function mdk4 {
 mdk4=`find $Folder_WIFI -name mdk4 -type d | grep -w "Tools/Wireless-Attacks/mdk4"`
 	if [ "$mdk4" = "Tools/Wireless-Attacks/mdk4" ]; then
 		echo -e "[ ✔ ]   MDK4 ${white}................ ${yellow}$Installed ${RESET}"
@@ -542,7 +611,168 @@ mdk4=`find $Folder_WIFI -name mdk4 -type d | grep -w "Tools/Wireless-Attacks/mdk
 		echo -e "[ ✔ ]   MDK4 ${white}................ ${yellow}$Installed ${RESET}"
 		cd $Work_dir
 	fi
+}
 ##################################
+##############################################
+function ShowAndInstall_MalwareTools {
+clear
+echo -e "${cyan}	Install Malware Tools${RESET}"
+sleep 0.5
+	function all_malware_tools {
+		drolit
+		dkmc
+		fatrat
+		msfpc
+		winpayloads
+		astroid
+		phantom
+		tophat
+		mpm
+		venom
+		hercules
+		zirikatu
+		chaos
+		nxcrypt
+		reverse0x1
+		backdoor_factory
+		trolo
+		metasploitavevasion
+		terminator
+		hacktheworld
+		avet
+		zerodoor
+		andsploit
+		koadic
+		mkvemon
+		beelogger
+		saint
+	}
+function ShowMalwareTable {
+cat << !
+ _________________________________________________________________________
+|    |				     |    |				  |
+| ID | 	Tool name		     | ID | 	Tool name		  |
+|----+-------------------------------|----+-------------------------------|
+| 1  | Dr0p1t-Framework 	     | 2  | Don't kill my cat  	          |
+|----+-------------------------------|----+-------------------------------|
+| 3  | TheFatRat 	             | 4  | MSFPC                         |
+|----+-------------------------------|----+-------------------------------|
+| 5  | Winpayloads   		     | 6  | Astroid   		          |
+|----+-------------------------------|----+-------------------------------|
+| 7  | Phantom  		     | 8  | Tophat	  		  |
+|----+-------------------------------|----+-------------------------------|
+| 9  | Meterpreter_Paranoid_Mode-SSL | 10 | Venom	  		  |
+|----+-------------------------------|----+-------------------------------|
+| 11 | Hercules	  		     | 12 | Zirikatu	  		  |
+|----+-------------------------------|----+-------------------------------|
+| 13 | Chaos	  		     | 14 | Nxcrypt	  		  |
+|----+-------------------------------|----+-------------------------------|
+| 15 | Reverse0x1	  	     | 16 | The-Backdoor-Factory	  |
+|----+-------------------------------|----+-------------------------------|
+| 17 | Trolo	  		     | 18 | Metasploitavevasion	          |
+|----+-------------------------------|----+-------------------------------|
+| 19 | Terminator	  	     | 20 | Hacktheworld	  	  |
+|----+-------------------------------|----+-------------------------------|
+| 21 | Avet	  		     | 22 | Zerodoor	  		  |
+|----+-------------------------------|----+-------------------------------|
+| 23 | Andsploit	  	     | 24 | Koadic	  		  |
+|----+-------------------------------|----+-------------------------------|
+| 25 | Mkvenom	  		     | 26 | Beelogger	  	          |
+|----+-------------------------------|----+-------------------------------|
+| 27 | Saint	  		     | 28 | ALL tools		          |
+|----+-------------------------------|----+-------------------------------|
+| 99 | $return_choose                       |                                    |
+ ------------------------------------------------------------------------- 
+!
+}
+ShowMalwareTable
+	echo -ne "$install_parameter"
+		while true; do
+		read parameter
+		case $parameter in		
+		1) drolit;;
+		2) dkmc;;
+		3) fatrat;;
+		4) msfpc;;
+		5) winpayloads;;
+		6) astroid;;
+		7) phantom;;
+		8) tophat;;
+		9) mpm;;
+		10) venom;;
+		11) hercules;;
+		12) zirikatu;;
+		13) chaos;;
+		14) nxcrypt;;
+		15) reverse0x1;;
+		16) backdoor_factory;;
+		17) trolo;;
+		18) metasploitavevasion;;
+		19) terminator;;
+		20) hacktheworld;;
+		21) avet;;
+		22) zerodoor;;
+		23) andsploi;;
+		24) koadic;;
+		25) mkvemon;;
+		26) beelogger;;
+		27) saint;;
+		28) all_malware_tools;;
+		99) break;;
+		*) echo -e "$error1";
+		esac
+	ShowMalwareTable
+	echo -ne "$install_parameter"
+		done
+sleep 1
+}
+
+function ShowAndInstall_WiFiTools {
+clear
+echo -e "${cyan}	Install WIFI Tools${RESET}"
+sleep 0.5
+	function all_wifi_tools {
+		fluxion
+		wifiphisher
+		airgeddon
+		hashcat
+		hcxtool
+		mdk4
+	}
+function ShowWIFITable {
+cat << !
+ _________________________________________________________________________
+|    |				     |    |				  |
+| ID | 	Tool name		     | ID | 	Tool name		  |
+|----+-------------------------------|----+-------------------------------|
+| 1  | Fluxion       	 	     | 2  | Wifiphisher  	          |
+|----+-------------------------------|----+-------------------------------|
+| 3  | Airgeddon 	             | 4  | Hashcat                       |
+|----+-------------------------------|----+-------------------------------|
+| 5  | Hcxtool   		     | 6  | Mdk4   		          |
+|----+-------------------------------|----+-------------------------------|
+| 7  | ALL tools		     | 99 | $return_choose                       |
+ ------------------------------------------------------------------------- 
+!
+}
+ShowWIFITable
+	echo -ne "$install_parameter"
+		while true; do
+		read parameter
+		case $parameter in		
+		1) fluxion;;
+		2) wifiphisher;;
+		3) airgeddon;;
+		4) hashcat;;
+		5) hcxtool;;
+		6) mdk4;;
+		7) all_wifi_tools;;
+		99) break;;
+		*) echo -e "$error1";
+		esac
+	ShowWIFITable
+	echo -ne "$install_parameter"
+		done
 sleep 1
 }
 function add_module_metasploits {
@@ -558,7 +788,7 @@ cd $Work_dir
 sleep 1
 }
 function ShowAndInstall_ALLTools {
-	ShowAndInstall_MalwareTools
-	ShowAndInstall_WiFiTools
+	all_malware_tools
+	all_wifi_tools
 	add_module_metasploits
 }

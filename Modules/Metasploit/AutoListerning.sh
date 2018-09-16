@@ -534,12 +534,12 @@ function autoscript {
 			*) echo -e "$error1";
 			esac			
 			done
-			cd ../../Victim/
 			 echo -e "[$red*$RESET] Stating Listerning with metasploit" 
 				
 }
 service postgresql start
 resize -s 40 105 > /dev/null
 windows
+cd ../../Victim/
 #xterm -fa monaco -fs 13 -bg black -e msfconsole -r $rcf
 msfconsole -r $rcf

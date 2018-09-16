@@ -1,6 +1,6 @@
 ## Death-Note v1.0:
     Version release: v1.0 (Experiment)
-    Author: MeowtonKalava & Ryuk-shinigami
+    Author: Ryuk-shinigami & MeowtonKalava
     Distros tested on : Kali Rolling
 
 ## Description:

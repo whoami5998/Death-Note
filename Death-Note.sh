@@ -33,8 +33,9 @@ echo -e $red"	M  ${white}MMMMM$red  M${white} 88ooood8 88'  "'`'"88   88   88'  
 echo -e $red"	M  ${white}MMMM'$red .M${white} 88.  ... 88.  .88   88   88    88    88    88 88.  .88   88   88.  ... 	"
 echo -e $red"	M       .MM${white} "'`'"88888P' "'`'"88888P8   dP   dP    dP    dP    dP "'`'"88888P'   dP   "'`'"88888P' 	"
 echo -e $red"	MMMMMMMMMMM${white}                                                                        	${RESET}"
-echo -e " Project's :${Blue} Tu404 ${RESET}"
-echo -e "Project's :${red} MeowtonKalva(MeoSully)  ${RESET}"
+echo -e " 								Project's :${white} Ryuk-shinigami ${RESET}"
+echo -e "								Project's :${red} MeowtonKalva(MeoSully)  ${RESET}"
+echo ""
 }
 Banner
 function language {

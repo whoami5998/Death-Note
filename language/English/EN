@@ -7,9 +7,7 @@ input_choose="Select one of the following styles: "
 WAchoose_option1="Attacks wireless networks"
 WAchoose_option2="Attacks Bluetooth networks"
 WAanser="Do you want to use tool?"
-GenTools1="1) Use Meterpreter_Paranoid_Mode-SSL"
-GenTools2="2) Use zirikatu"
-GenTools3="3) Use Thefatrat"
+Choose_Tools="Do you want to use on any tool ?"
 GenMess="1) Automatically create and listen backdoor"
 ###################################   AutoListerning.sh + Listerning.sh   ####################################
 ##############################################################################################################

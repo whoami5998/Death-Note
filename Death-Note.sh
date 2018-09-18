@@ -126,6 +126,24 @@ while true; do
 }
 #####################################################################
 function GenAndLis {
+		function function_config_mode1 {
+			cd $Work_dir/Modules/Metasploit/
+			rm config > /dev/null 2>&1
+			touch config
+			if [ "$Type_Li" = "WAN listerning using NGROK" ]; then	echo "WorkMode=3" > config
+			elif [ "$Type_Li" = "WAN listerning" ]; then 	echo "WorkMode=2" > config
+			else	echo "WorkMode=1" > config
+			fi
+		}
+		function function_config_mode2 {
+			rm config > /dev/null 2>&1
+			touch config
+			echo "#########################################" > config
+			if [ "$Type_Li" = "WAN listerning using NGROK" ]; then	echo "Working_mode=3" >> config
+			elif [ "$Type_Li" = "WAN listerning" ]; then 	echo "Working_mode=2" >> config
+			else	echo "Working_mode=1" >> config 
+			fi
+		}
 #
 # Ngrok Tunnel - Port Forward
 #
@@ -148,15 +166,9 @@ gen_backdoor_table
 			cd $dir_malware_tools/TheFatRat/
 			./fatrat; clear; Banner; order; break;;
 4) 	###################### msfpc ##########################	
-			cd $Work_dir/Modules/Metasploit/
-			rm config > /dev/null 2>&1
-			touch config
-			if [ "$Type_Li" = "WAN listerning using NGROK" ]; then	echo "WorkMode=3" > config
-			elif [ "$Type_Li" = "WAN listerning" ]; then 	echo "WorkMode=2" > config
-			else	echo "WorkMode=1" > config
-			fi
-			cd ../../$dir_malware_tools/mpc/
-			./msfpc1.sh; clear; Banner; order; break;;
+			function_config_mode1
+			cd $dir_malware_tools/mpc/
+			./msfpc1.sh; clear;cd $Work_dir; Banner; order; break;;
 5)	###################### Winpayloads ###########################
 			cd $dir_malware_tools/Winpayloads/
 			python WinPayloads.py; clear; Banner; order; break;;
@@ -170,14 +182,8 @@ gen_backdoor_table
 			python tophat.py; clear; Banner; order; break;;
 9) 	###################### MPM ##########################	
 		  	cd $dir_malware_tools/Meterpreter_Paranoid_Mode-SSL/
-			rm config > /dev/null 2>&1
-			touch config
-			echo "#########################################" > config
-			if [ "$Type_Li" = "WAN listerning using NGROK" ]; then	echo "Working_mode=3" >> config
-			elif [ "$Type_Li" = "WAN listerning" ]; then 	echo "Working_mode=2" >> config
-			else	echo "Working_mode=1" >> config 
-			fi
-			./Meterpreter_Paranoid_Mode.sh; clear; Banner; order; break;;
+			function_config_mode2
+			./Meterpreter_Paranoid_Mode.sh; clear;cd $Work_dir; Banner; order; break;;
 10)	###################### venom ###########################
 			cd $dir_malware_tools/venom/
 			./venom.sh; clear; Banner; order; break;;
@@ -186,14 +192,8 @@ gen_backdoor_table
 			HERCULES; clear; Banner; order; break;;
 12) 	###################### zirikatu ##########################
 		  	cd $dir_malware_tools/zirikatu/
-			rm config > /dev/null 2>&1
-			touch config
-			echo "#########################################" > config
-			if [ "$Type_Li" = "WAN listerning using NGROK" ]; then	echo "Working_mode=3" >> config
-			elif [ "$Type_Li" = "WAN listerning" ]; then 	echo "Working_mode=2" >> config
-			else	echo "Working_mode=1" >> config 
-			fi
-			./zirikatu.sh; clear; Banner; order; break;;
+			function_config_mode2
+			./zirikatu.sh; clear;cd $Work_dir; Banner; order; break;;
 13)	###################### CHAOS ###########################
 			cd $dir_malware_tools/CHAOS/
 			go run CHAOS.go; clear; Banner; order; break;;
@@ -205,17 +205,12 @@ gen_backdoor_table
 			python reverse.py; clear; Banner; order; break;;
 17)	###################### Trolo ###########################
 			cd $dir_malware_tools/trolo/
-			rm config > /dev/null 2>&1
-			touch config
-			echo "#########################################" > config
-			if [ "$Type_Li" = "WAN listerning using NGROK" ]; then	echo "Working_mode=3" >> config
-			elif [ "$Type_Li" = "WAN listerning" ]; then 	echo "Working_mode=2" >> config
-			else	echo "Working_mode=1" >> config 
-			fi
-			./trolo.sh; clear; Banner; order; break;;
+			function_config_mode2
+			./trolo.sh; clear;cd $Work_dir; Banner; order; break;;
 18)	###################### Metasploitavevasion ###########################
+			function_config_mode1
 			cd $dir_malware_tools/metasploitavevasion/
-			./avoid.sh; clear; Banner; order; break;;
+			./avoid.sh; clear;cd $Work_dir; Banner; order; break;;
 19)	###################### Terminator ###########################
 			cd $dir_malware_tools/Terminator/
 			python terminator.py; clear; Banner; order; break;;

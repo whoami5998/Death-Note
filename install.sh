@@ -68,7 +68,7 @@ else
 fi
 }
 ########## cleaning up #########
-function cleanup {
+function cleanupp {
 echo -e "${cyan}	Clean and Update System${RESET}"
 sudo apt-get install -f -y
 sudo apt-get autoremove -y

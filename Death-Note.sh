@@ -150,6 +150,7 @@ function GenAndLis {
 echo -e "[${red}*${RESET}] $SetupMode [${red}*${RESET}]"
 Type_Li=$(zenity --list  --title "♛ Type Listerning ♛" --text "\nChose option:" --radiolist --column "Pick" --column "Option" TRUE "LAN listerning" FALSE "WAN listerning" FALSE "WAN listerning using NGROK" --width 300 --height 210 )
 #
+cd $Work_dir
 resize -s 31 104 > /dev/null 2>&1
 gen_backdoor_table
 	echo -ne "$Choose_Tools "
@@ -167,7 +168,7 @@ gen_backdoor_table
 			./fatrat; clear; Banner; order; break;;
 4) 	###################### msfpc ##########################	
 			function_config_mode1
-			cd $dir_malware_tools/mpc/
+			cd $Work_dir/$dir_malware_tools/mpc/
 			./msfpc1.sh; clear;cd $Work_dir; Banner; order; break;;
 5)	###################### Winpayloads ###########################
 			cd $dir_malware_tools/Winpayloads/
@@ -209,7 +210,7 @@ gen_backdoor_table
 			./trolo.sh; clear;cd $Work_dir; Banner; order; break;;
 18)	###################### Metasploitavevasion ###########################
 			function_config_mode1
-			cd $dir_malware_tools/metasploitavevasion/
+			cd $Work_dir/$dir_malware_tools/metasploitavevasion/
 			./avoid.sh; clear;cd $Work_dir; Banner; order; break;;
 19)	###################### Terminator ###########################
 			cd $dir_malware_tools/Terminator/

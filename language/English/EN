@@ -9,6 +9,10 @@ WAchoose_option2="Attacks Bluetooth networks"
 WAanser="Do you want to use tool?"
 Choose_Tools="Do you want to use on any tool ?"
 GenMess="1) Automatically create and listen backdoor"
+############### Install Tools ##############################3
+Installed="Installed"
+NotInstalled="Not installed"
+install_parameter="Select the Tool you want to install: "
 ###################################   AutoListerning.sh + Listerning.sh   ####################################
 ##############################################################################################################
 ipv4=" Your IPv4 address is :"

@@ -9,6 +9,7 @@ SetupMode="Thiết lập chế độ lắng nghe"
 ############### Install Tools ##############################3
 Installed="Đã cài đặt"
 NotInstalled="Chưa cài đặt"
+install_parameter="Chọn Tool bạn muốn cài đặt: "
 ###############  AutoListerning.sh + Listerning.sh  ####################################
 ipv4=" Địa chỉ IPv4 của bạn là :"
 ipv6=" Địa chỉ IPv6 của bạn là :"

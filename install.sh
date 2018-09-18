@@ -777,7 +777,7 @@ sleep 1
 }
 function add_module_metasploits {
 ############# Post Metasploit  ################
-if [ "$dist0" = "Kali" ]; then
+if [[ "$dist0" = "Kali" ]] || [[ "$dist0" = "Parrot" ]]; then
 	Folder_Module_Metasploit="/usr/share/metasploit-framework/modules"
 else [ "$dist0" = "Ubuntu" ]
 	Folder_Module_Metasploit="/opt/metasploit-framework/embedded/framework/modules"

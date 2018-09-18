@@ -204,7 +204,7 @@ gen_backdoor_table
 			cd $dir_malware_tools/Reverse0x1/
 			python reverse.py; clear; Banner; order; break;;
 17)	###################### Trolo ###########################
-cd $dir_malware_tools/trolo/
+			cd $dir_malware_tools/trolo/
 			rm config > /dev/null 2>&1
 			touch config
 			echo "#########################################" > config

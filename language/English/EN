@@ -1,6 +1,5 @@
-##############################################################################################################
-##################################### Death-Note #############################################################
-##############################################################################################################
+
+##################################### Death-Note ############
 return_choose="Back"
 SetupMode="Setup Mode"
 input_choose="Select one of the following styles: "
@@ -9,12 +8,11 @@ WAchoose_option2="Attacks Bluetooth networks"
 WAanser="Do you want to use tool?"
 Choose_Tools="Do you want to use on any tool ?"
 GenMess="1) Automatically create and listen backdoor"
-############### Install Tools ##############################3
+############### Install Tools ##############################
 Installed="Installed"
 NotInstalled="Not installed"
 install_parameter="Select the Tool you want to install: "
 ###################################   AutoListerning.sh + Listerning.sh   ####################################
-##############################################################################################################
 ipv4=" Your IPv4 address is :"
 ipv6=" Your IPv4 address is :"
 wanip=" Your public IP address is:"
@@ -50,5 +48,4 @@ import_name="Import NAME :"
 ########### remote dekstop ##########
 use="User name to add :"
 pass="password to add :"
-##############################################################################################################
-##############################################################################################################
+#############################################################################################################

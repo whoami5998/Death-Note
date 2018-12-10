@@ -2751,9 +2751,9 @@ fi
 function metasploit {
 	cd $path_site_metasploit
 	check_folder_backdoor=`find  -name backdoor -type d | grep -w "./backdoor"`
-	if [ "$check_folder_victim" = "./backdoor" ]; then
+	if [ "$check_folder_backdoor" = "./backdoor" ]; then
 		echo ""
-	else
+	elif [ "$check_folder_backdoor" != "./backdoor" ]; then
 	 	mkdir backdoor
 	fi
 	cd $WORK_DIR

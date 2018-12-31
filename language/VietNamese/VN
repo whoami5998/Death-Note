@@ -49,5 +49,5 @@ pass="Mật khẩu của người dùng cần thêm :"
 ## upload_injectCA
 input_path_lfile="Nhập nơi chứa file :"
 input_path_rfile="Đổi tên file sau khi upload (Enter để giữ nguyên tên file ) :"
-input_proxy="Nhập địa chỉ proxy của burp suite :"
+input_proxy="Nhập IP public:"
 input_port="Nhập port lắng nge trên burp suite :"

